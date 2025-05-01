@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/recipes_action_search"
+        android:icon="@drawable/icon_search"
+        android:title="Search"
+        app:showAsAction="always" />
+
+    <group android:id="@+id/group">
+        <item android:id="@+id/recipes_group_item_edit"
+            android:title="Edit"/>
+        <item android:id="@+id/recipes_group_item_display"
+            android:title="Display">
+            <menu>
+                <item
+                    android:id="@+id/recipes_group_display_small"
+                    android:title="List (Small)" />
+                <item
+                    android:id="@+id/recipes_group_display_big"
+                    android:title="List (Big)" />
+            </menu>
+        </item>
+    </group>
+</menu>
