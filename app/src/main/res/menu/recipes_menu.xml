@@ -10,7 +10,16 @@
     <group android:id="@+id/group">
         <item android:id="@+id/recipes_group_item_edit"
             android:title="Edit"/>
-        <item android:id="@+id/recipes_group_item_show"
-            android:title="Display"/>
+        <item android:id="@+id/recipes_group_item_display"
+            android:title="Display">
+            <menu>
+                <item
+                    android:id="@+id/recipes_group_display_small"
+                    android:title="List (Small)" />
+                <item
+                    android:id="@+id/recipes_group_display_big"
+                    android:title="List (Big)" />
+            </menu>
+        </item>
     </group>
 </menu>
