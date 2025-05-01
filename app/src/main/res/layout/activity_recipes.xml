@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RecipesActivity"
+    tools:context=".RecipesFragment"
     android:background="@color/default_gray"
     >
 
@@ -82,7 +82,7 @@
         app:layout_constraintHorizontal_bias="0.909"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.908"
+        app:layout_constraintVertical_bias="0.834"
         app:srcCompat="@drawable/icon_like" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,9 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
+import androidx.core.view.MenuProvider;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,8 +45,33 @@ public class RecipesFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_recipes, container, false);
 
-        // Toolbar logic can be skipped or adjusted based on your layout
-        // For bottom nav, you usually don't show a toolbar per fragment
+        Toolbar toolbar = view.findViewById(R.id.recipes_toolbar);
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
+        activity.setSupportActionBar(toolbar);
+
+        // Register the MenuProvider
+        activity.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.recipes_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.recipes_action_search) {
+                    // handle search
+                    return true;
+                } else if (id == R.id.recipes_group_display_small) {
+                    recipeAdapter.setViewType(0);
+                    return true;
+                } else if (id == R.id.recipes_group_display_big) {
+                    recipeAdapter.setViewType(-1);
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED); // lifecycle-aware!
 
         LinearLayout BottomTypeMenuButton = view.findViewById(R.id.recipes_button_type_menu);
 
@@ -80,4 +107,5 @@ public class RecipesFragment extends Fragment {
 
         return recipeList;
     }
+
 }
