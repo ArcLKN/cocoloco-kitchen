@@ -23,6 +23,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -84,28 +85,16 @@ public class RecipesFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recipes_recycler_view);
 
-        recipeAdapter = new RecipeAdapter(requireContext(), getRecipeList());
+        SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        List<Recipe> recipes = viewModel.getRecipeList();
+
+        recipeAdapter = new RecipeAdapter(requireContext(), recipes);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(recipeAdapter);
 
         Toast.makeText(getContext(), "Recipe list loaded", Toast.LENGTH_SHORT).show();
 
         return view;
-    }
-
-    private List<Recipe> getRecipeList() {
-        List<Recipe> recipeList = new ArrayList<>();
-
-        Recipe recipe1 = new Recipe("Cinnamon & Orange Flaky Rolls", "An orange CinnamonRoll",
-                4, 60, "$", null,
-                R.drawable.aymen_cinnamon_rolls, null,
-                null, false, null, null);
-
-        for (int i = 0; i < 10; i++) {
-            recipeList.add(recipe1);
-        }
-
-        return recipeList;
     }
 
 }
