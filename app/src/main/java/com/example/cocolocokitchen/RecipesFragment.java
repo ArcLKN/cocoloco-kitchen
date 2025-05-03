@@ -92,7 +92,7 @@ public class RecipesFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(recipeAdapter);
 
-        Toast.makeText(getContext(), "Recipe list loaded", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "Recipe list loaded", Toast.LENGTH_SHORT).show();
 
         return view;
     }
