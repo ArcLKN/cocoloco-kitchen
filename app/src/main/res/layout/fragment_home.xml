@@ -101,11 +101,26 @@
                 android:fontFamily="@font/matipo"
                 android:textSize="18sp"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/fav1"
-                android:layout_width="128dp"
-                android:layout_height="144dp"
-                android:layout_marginTop="@dimen/simple_margin"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/favs_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="@dimen/simple_margin"
+                />
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/fav1"-->
+<!--                android:layout_width="128dp"-->
+<!--                android:layout_height="144dp"-->
+<!--                android:layout_marginTop="@dimen/simple_margin"/>-->
+
+            <View
+                android:id="@+id/clear_space"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                app:layout_constraintBottom_toBottomOf="parent" />
         </LinearLayout>
     </ScrollView>
 

@@ -1,4 +1,8 @@
+package com.example.cocolocokitchen;
+
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -8,6 +12,9 @@ public class KitchenDB extends SQLiteOpenHelper {
     //Create the database
     private static final String DATABASE_NAME = "kitchen.db";
     private static final int DATABASE_VERSION = 1;
+
+
+
 
     //Initialize the recipes table
     public static final String RECIPE_TABLE_NAME = "recipes";
@@ -71,6 +78,10 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String PLANNING_COLUMN_DATE = "date";
     public static final String PLANNING_COLUMN_TIME = "time_of_day";
 
+    //Initialize grocery table
+    public static final String GROCERY_TABLE_NAME = "groceries";
+    public static final String GROCERY_COLUMN_ID = "id_grocery";
+
     //Initialize junction tables
     public static final String RECIPE_INGREDIENT_NAME = "Recipe_Ingredient";
     public static final String RECIPE_INGREDIENT_QUANTITY = "quantity";
@@ -81,6 +92,9 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String RECIPE_TAG_NAME = "Recipe_Tag";
 
     public static final String RECIPE_GROUP_NAME = "Recipe_Group";
+
+
+
 
     //Create the tables
     public static final String RECIPE_TABLE_CREATE =
@@ -204,18 +218,47 @@ public class KitchenDB extends SQLiteOpenHelper {
                     "FOREIGN KEY (" + GROUP_COLUMN_ID + ") REFERENCES \"" + GROUP_TABLE_NAME + "\" (" + GROUP_COLUMN_ID + ")" +
                     ");";
 
+
+
+
     //Constructor
     public KitchenDB ( Context context ) {
         super ( context , DATABASE_NAME , null , DATABASE_VERSION );
     }
 
-    public KitchenDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(RECIPE_TABLE_CREATE);
+
+        // Insert initial dummy recipe(s)
+        sqLiteDatabase.execSQL("INSERT INTO " + RECIPE_TABLE_NAME + " (" +
+                RECIPE_COLUMN_NAME + ", " +
+                RECIPE_COLUMN_DESCRIPTION + ", " +
+                RECIPE_COLUMN_SERVINGS + ", " +
+                RECIPE_COLUMN_PREP_TIME + ", " +
+                RECIPE_COLUMN_PRICE_LEVEL + ", " +
+                RECIPE_COLUMN_SOURCE + ") VALUES (" +
+                "'Cinnamon Rolls'," +
+                "'Delicious cinnamon rolls with icing.'," +
+                "4," +
+                "30," +
+                "'$$'," +
+                "'Grandma’s Kitchen');");
+
+        sqLiteDatabase.execSQL("INSERT INTO " + RECIPE_TABLE_NAME + " (" +
+                RECIPE_COLUMN_NAME + ", " +
+                RECIPE_COLUMN_DESCRIPTION + ", " +
+                RECIPE_COLUMN_SERVINGS + ", " +
+                RECIPE_COLUMN_PREP_TIME + ", " +
+                RECIPE_COLUMN_PRICE_LEVEL + ", " +
+                RECIPE_COLUMN_SOURCE + ") VALUES (" +
+                "'Avocado Toast'," +
+                "'Crunchy toast with smashed avocado and toppings.'," +
+                "2," +
+                "10," +
+                "'$'," +
+                "'Instagram');");
+
         sqLiteDatabase.execSQL(STEP_TABLE_CREATE);
         sqLiteDatabase.execSQL(INGREDIENT_TABLE_CREATE);
         sqLiteDatabase.execSQL(UTENSIL_TABLE_CREATE);
@@ -250,5 +293,13 @@ public class KitchenDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RECIPE_GROUP_NAME);
 
         onCreate(sqLiteDatabase);
+    }
+
+
+
+
+    public Cursor getAllRecipes() {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + RECIPE_TABLE_NAME, null);
     }
 }
