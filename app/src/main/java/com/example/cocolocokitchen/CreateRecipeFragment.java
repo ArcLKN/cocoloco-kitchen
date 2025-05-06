@@ -1,18 +1,25 @@
 package com.example.cocolocokitchen;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,13 +31,19 @@ import java.util.List;
 public class CreateRecipeFragment extends Fragment {
 
     LinearLayout ingredientListContainer;
-    List<Ingredient> ingredientList;
+    List<Ingredient> ingredientList = new ArrayList<>();
 
     LinearLayout utensilListContainer;
-    List<Utensil> utensilList;
+    List<Utensil> utensilList = new ArrayList<>();
 
     LinearLayout stepListContainer;
     List<Step> stepList = new ArrayList<>();
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri imageUri;
+
+    private ActivityResultLauncher<Intent> pickImageLauncher;
+    private ImageView recipeImageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +71,26 @@ public class CreateRecipeFragment extends Fragment {
 
         Button addStepButton = view.findViewById(R.id.create_recipe_button_step);
         addStepButton.setOnClickListener(v -> showAddStepDialog());
+
+
+        recipeImageView = view.findViewById(R.id.create_recipe_image); // Replace with your ImageView ID
+
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        imageUri = result.getData().getData();
+                        recipeImageView.setImageURI(imageUri); // Display selected image
+                    }
+                }
+        );
+
+        recipeImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            pickImageLauncher.launch(intent);
+        });
+
 
         return view;
     }
@@ -102,7 +135,9 @@ public class CreateRecipeFragment extends Fragment {
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         List<Recipe> recipes = viewModel.getRecipeList();
 
-        Recipe new_recipe = new Recipe(title, desc, people, time, "$", null, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null);
+        String imageUriString = imageUri != null ? imageUri.toString() : null;
+
+        Recipe new_recipe = new Recipe(title, desc, people, time, "$", imageUriString, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
 
         recipes.add(new_recipe);
 

@@ -39,12 +39,15 @@
 
 
             <ImageView
+                android:id="@+id/create_recipe_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/simple_margin"
                 android:scaleType="centerCrop"
-                android:src="@drawable/recipe_default" />
+                android:src="@drawable/recipe_default"
+                android:clickable="true"
+                android:focusable="true" />
 
             <TextView
                 android:layout_width="match_parent"
