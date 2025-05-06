@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".HomeFragment">
 
     <ScrollView
@@ -20,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Welcome,"
-                android:textStyle="bold"
+                android:fontFamily="@font/matipo"
                 android:textSize="20sp"
                 android:gravity="center" />
 
@@ -37,9 +38,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Grocery List"
-                android:textStyle="bold"
+                android:fontFamily="@font/matipo"
                 android:layout_marginTop="@dimen/global_margin"
-                android:textSize="24sp"/>
+                android:textSize="18sp"/>
 
             <CheckBox
                 android:id="@+id/grocery1"
@@ -56,32 +57,49 @@
                 android:layout_height="wrap_content"
                 android:text="Carrots (1)"/>
 
-            <TextView
-                android:id="@+id/calendar_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Calendar"
-                android:textStyle="bold"
-                android:layout_marginTop="@dimen/global_margin"
-                android:textSize="24sp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add meal"/>
+                <TextView
+                    android:id="@+id/calendar_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Calendar"
+                    android:fontFamily="@font/matipo"
+                    android:textSize="18sp"/>
+
+                <Button
+                    android:id="@+id/moreButton"
+                    android:layout_width="70dp"
+                    android:layout_height="48dp"
+                    android:text="MORE"
+                    android:backgroundTint="#55B8FF"
+                    android:textSize="8sp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+            />
+
+            </LinearLayout>
+
+
             <CalendarView
                 android:id="@+id/calendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minDate="01/04/2025"/>
+                android:minDate="01/04/2025" />
 
             <TextView
                 android:id="@+id/fav_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="My Favourites"
-                android:textStyle="bold"
-                android:textSize="24sp"/>
+                android:fontFamily="@font/matipo"
+                android:textSize="18sp"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/fav1"
