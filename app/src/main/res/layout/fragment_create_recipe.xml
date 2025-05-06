@@ -38,7 +38,6 @@
             android:padding="24dp">
 
 
-
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -48,9 +47,9 @@
                 android:src="@drawable/recipe_default" />
 
             <TextView
-                android:layout_marginVertical="@dimen/simple_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/simple_margin"
                 android:paddingTop="8dp"
                 android:text="Recipe Title"
                 android:textSize="14sp"
@@ -67,19 +66,19 @@
                 android:padding="@dimen/simple_margin" />
 
             <TextView
-                android:layout_marginVertical="@dimen/simple_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/simple_margin"
                 android:paddingTop="8dp"
                 android:text="Recipe Description"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:layout_marginVertical="@dimen/simple_margin"
                 android:id="@+id/create_recipe_desc"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
+                android:layout_marginVertical="@dimen/simple_margin"
                 android:background="@drawable/custom_input"
                 android:gravity="top"
                 android:hint="Recipe Title"
@@ -99,15 +98,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/simple_margin"
-                        android:paddingTop="8dp"
-                        android:text="Time"
-                        android:textSize="14sp"
                         android:drawableEnd="@drawable/baseline_access_time_24"
                         android:drawablePadding="@dimen/simple_margin"
                         android:ems="4"
                         android:gravity="center_vertical"
-                    android:textStyle="bold" />
-
+                        android:paddingTop="8dp"
+                        android:text="Time"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
 
                     <LinearLayout
@@ -125,13 +123,12 @@
                             android:padding="@dimen/simple_margin" />
 
                         <TextView
-                            android:layout_marginHorizontal="@dimen/simple_margin"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_marginHorizontal="@dimen/simple_margin"
                             android:gravity="center_vertical"
                             android:text="h"
-                            android:textSize="20sp"
-                        />
+                            android:textSize="20sp" />
 
                         <EditText
                             android:id="@+id/create_recipe_minutes"
@@ -144,13 +141,12 @@
                             android:padding="@dimen/simple_margin" />
 
                         <TextView
-                            android:layout_marginHorizontal="@dimen/simple_margin"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_marginHorizontal="@dimen/simple_margin"
                             android:gravity="center_vertical"
                             android:text="min"
-                            android:textSize="20sp"
-                            />
+                            android:textSize="20sp" />
 
                     </LinearLayout>
 
@@ -165,11 +161,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/simple_margin"
+                        android:ems="4"
+                        android:gravity="center_vertical"
                         android:paddingTop="8dp"
                         android:text="Price"
                         android:textSize="14sp"
-                        android:ems="4"
-                        android:gravity="center_vertical"
                         android:textStyle="bold" />
 
                     <com.google.android.material.button.MaterialButtonToggleGroup
@@ -177,61 +173,57 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        app:singleSelection="true"
-                        app:selectionRequired="true">
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/priceLow"
+                            style="@style/PriceButton"
                             android:layout_width="48dp"
-                            android:padding="0dp"
                             android:layout_height="48dp"
+                            android:padding="0dp"
                             android:text="$"
                             android:textColor="@color/black"
                             android:textSize="18sp"
+                            app:backgroundTint="@color/default_gray"
+                            app:checkedIcon="@null"
                             app:cornerRadius="10dp"
                             app:strokeColor="@color/default_gray"
-                            app:strokeWidth="1dp"
-                            app:checkedIcon="@null"
-                            app:backgroundTint="@color/default_gray"
-                            style="@style/PriceButton"
-                            />
+                            app:strokeWidth="1dp" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/priceMedium"
-                            android:padding="0dp"
+                            style="@style/PriceButton"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+                            android:padding="0dp"
                             android:text="$$"
                             android:textColor="@color/black"
                             android:textSize="18sp"
+                            app:backgroundTint="@color/default_gray"
+                            app:checkedIcon="@null"
                             app:cornerRadius="10dp"
                             app:strokeColor="@color/default_gray"
-                            app:strokeWidth="1dp"
-                            app:checkedIcon="@null"
-                            app:backgroundTint="@color/default_gray"
-                            style="@style/PriceButton"
-                            />
+                            app:strokeWidth="1dp" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/priceHigh"
-                            android:padding="0dp"
+                            style="@style/PriceButton"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+                            android:padding="0dp"
                             android:text="$$$"
                             android:textColor="@color/black"
                             android:textSize="18sp"
+                            app:backgroundTint="@color/default_gray"
+                            app:checkedIcon="@null"
                             app:cornerRadius="10dp"
                             app:strokeColor="@color/default_gray"
-                            app:strokeWidth="1dp"
-                            app:checkedIcon="@null"
-                            app:backgroundTint="@color/default_gray"
-                            style="@style/PriceButton"
-                            />
+                            app:strokeWidth="1dp" />
 
                     </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 </LinearLayout>
-
 
 
             </LinearLayout>
@@ -249,13 +241,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/simple_margin"
-                        android:paddingTop="8dp"
-                        android:text="Pers."
-                        android:textSize="14sp"
                         android:drawableEnd="@drawable/baseline_group_24"
                         android:drawablePadding="@dimen/simple_margin"
                         android:ems="4"
                         android:gravity="center_vertical"
+                        android:paddingTop="8dp"
+                        android:text="Pers."
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <EditText
@@ -273,21 +265,20 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginLeft="@dimen/global_margin"
-                    >
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/simple_margin"
-                        android:paddingTop="8dp"
-                        android:text="Source"
-                        android:textSize="14sp"
                         android:drawableEnd="@drawable/baseline_person_24"
                         android:drawablePadding="@dimen/simple_margin"
                         android:ems="5"
                         android:gravity="center_vertical"
+                        android:paddingTop="8dp"
+                        android:text="Source"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <EditText
@@ -306,9 +297,9 @@
 
             <TextView
                 android:id="@+id/create_recipe_ingredients"
-                android:layout_marginVertical="@dimen/simple_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/simple_margin"
                 android:paddingTop="8dp"
                 android:text="Ingredients"
                 android:textSize="14sp"
@@ -316,19 +307,18 @@
 
             <LinearLayout
                 android:id="@+id/create_recipe_ingredient_list_container"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
             <Button
                 android:id="@+id/create_recipe_button_ingredient"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:text="Add"
-                android:gravity="center"
                 android:layout_gravity="center"
-                />
+                android:backgroundTint="@android:color/darker_gray"
+                android:gravity="center"
+                android:text="Add" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -341,24 +331,23 @@
 
             <LinearLayout
                 android:id="@+id/create_recipe_utensil_list_container"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
             <Button
                 android:id="@+id/create_recipe_button_utensil"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:text="Add"
-                android:gravity="center"
                 android:layout_gravity="center"
-                />
+                android:backgroundTint="@android:color/darker_gray"
+                android:gravity="center"
+                android:text="Add" />
 
             <TextView
-                android:layout_marginVertical="@dimen/simple_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/simple_margin"
                 android:paddingTop="8dp"
                 android:text="Steps"
                 android:textSize="14sp"
@@ -366,30 +355,28 @@
 
             <LinearLayout
                 android:id="@+id/create_recipe_step_list_container"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
             <Button
                 android:id="@+id/create_recipe_button_step"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:text="Add"
-                android:gravity="center"
                 android:layout_gravity="center"
-                />
+                android:backgroundTint="@android:color/darker_gray"
+                android:gravity="center"
+                android:text="Add" />
 
             <Button
                 android:id="@+id/create_recipe_button"
-                android:layout_marginTop="@dimen/global_margin"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Create recipe"
-                android:gravity="center"
                 android:layout_gravity="center"
-                />
+                android:layout_marginTop="@dimen/global_margin"
+                android:backgroundTint="@color/colorPrimary"
+                android:gravity="center"
+                android:text="Create recipe" />
 
             <View
                 android:layout_width="match_parent"

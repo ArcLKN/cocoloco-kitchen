@@ -14,7 +14,7 @@ public class SharedViewModel extends ViewModel {
             Recipe recipe1 = new Recipe("Cinnamon & Orange Flaky Rolls", "An orange CinnamonRoll",
                     4, 60, "$", null,
                     R.drawable.aymen_cinnamon_rolls, null,
-                    null, false, null, null);
+                    null, null, false, null, null);
             for (int i = 0; i < 10; i++) {
                 recipeList.add(recipe1);
             }
