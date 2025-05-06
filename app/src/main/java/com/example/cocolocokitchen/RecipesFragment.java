@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +96,16 @@ public class RecipesFragment extends Fragment {
         recipeAdapter = new RecipeAdapter(requireContext(), recipes);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(recipeAdapter);
+
+        FloatingActionButton createRecipeFloatingButton = view.findViewById(R.id.recipe_floatingActionButton);
+        createRecipeFloatingButton.setOnClickListener(v -> {
+            Fragment createRecipeFragment = new CreateRecipeFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, createRecipeFragment) // Use your container ID here
+                    .addToBackStack(null) // Optional: enables back navigation
+                    .commit();
+        });
 
         //Toast.makeText(getContext(), "Recipe list loaded", Toast.LENGTH_SHORT).show();
 
