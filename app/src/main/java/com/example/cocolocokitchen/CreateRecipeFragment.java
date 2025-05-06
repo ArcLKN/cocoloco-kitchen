@@ -99,7 +99,7 @@ public class CreateRecipeFragment extends Fragment {
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         List<Recipe> recipes = viewModel.getRecipeList();
 
-        Recipe new_recipe = new Recipe(title, desc, people, time, "$", null, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null);
+        Recipe new_recipe = new Recipe(title, desc, people, time, "$", null, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
 
         recipes.add(new_recipe);
 

@@ -16,10 +16,12 @@ public class Recipe {
     private boolean isFavorite;
     private List<String> tags;
     private String group;
+    private String source;
 
     public Recipe(String title, String description, int numberOfServing, int timeInMinute,
                   String costDegree, String imageUrl, int imageResId, List<Ingredient> ingredientList,
-                  List<Utensil> utensilList, List<Step> stepList, boolean isFavorite, List<String> tags, String group) {
+                  List<Utensil> utensilList, List<Step> stepList, boolean isFavorite,
+                  List<String> tags, String group, String source) {
         this . title = title;
         this . description = description;
         this . numberOfServing = numberOfServing;
@@ -33,6 +35,7 @@ public class Recipe {
         this . isFavorite = isFavorite;
         this . tags = tags;
         this . group = group;
+        this . source = source;
     }
 
     public String getTitle() {
