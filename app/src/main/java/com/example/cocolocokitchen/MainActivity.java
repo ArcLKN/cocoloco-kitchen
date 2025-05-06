@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_recipes) {
                 selectedFragment = new RecipesFragment();
             } else if (id == R.id.nav_settings) {
-                selectedFragment = new CreateRecipeFragment();
+                selectedFragment = new ProfileFragment();
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, selectedFragment)

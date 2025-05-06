@@ -1,35 +1,49 @@
 package com.example.cocolocokitchen;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CreateRecipeFragment extends Fragment {
 
     LinearLayout ingredientListContainer;
-    List<Ingredient> ingredientList;
+    List<Ingredient> ingredientList = new ArrayList<>();
 
     LinearLayout utensilListContainer;
-    List<Utensil> utensilList;
+    List<Utensil> utensilList = new ArrayList<>();
 
     LinearLayout stepListContainer;
-    List<Step> stepList;
+    List<Step> stepList = new ArrayList<>();
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri imageUri;
+
+    private ActivityResultLauncher<Intent> pickImageLauncher;
+    private ImageView recipeImageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +67,27 @@ public class CreateRecipeFragment extends Fragment {
         addUtensilButton.setOnClickListener(v -> showAddUtensilDialog());
 
         Button addStepButton = view.findViewById(R.id.create_recipe_button_step);
-        //addStepButton.setOnClickListener(v -> showAddStepDialog());
+        addStepButton.setOnClickListener(v -> showAddStepDialog());
+
+
+        recipeImageView = view.findViewById(R.id.create_recipe_image); // Replace with your ImageView ID
+
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        imageUri = result.getData().getData();
+                        recipeImageView.setImageURI(imageUri); // Display selected image
+                    }
+                }
+        );
+
+        recipeImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            pickImageLauncher.launch(intent);
+        });
+
 
         return view;
     }
@@ -98,7 +132,9 @@ public class CreateRecipeFragment extends Fragment {
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         List<Recipe> recipes = viewModel.getRecipeList();
 
-        Recipe new_recipe = new Recipe(title, desc, people, time, "$", null, R.drawable.recipe_default, ingredientList, utensilList, false, null, null);
+        String imageUriString = imageUri != null ? imageUri.toString() : null;
+
+        Recipe new_recipe = new Recipe(title, desc, people, time, "$", imageUriString, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
 
         recipes.add(new_recipe);
 
@@ -249,6 +285,92 @@ public class CreateRecipeFragment extends Fragment {
 
                         Toast.makeText(getContext(), "Added: " + name + " - " + quantity, Toast.LENGTH_SHORT).show();
                     } else {
+                        Toast.makeText(getContext(), "Please fill in both fields", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    private void showAddStepDialog() {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_step, null);
+
+        EditText stepNameInput = dialogView.findViewById(R.id.step_title_input);
+        EditText stepDescriptionInput = dialogView.findViewById(R.id.step_description_input);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Add step")
+                .setView(dialogView)
+                .setPositiveButton("Add", (dialog, which) -> {
+                    String title = stepNameInput.getText().toString().trim();
+                    String description = stepDescriptionInput.getText().toString().trim();
+
+                    if (!title.isEmpty() && !description.isEmpty()) {
+
+                        // Layout vertical pour l'étape entière
+                        LinearLayout stepEntryLayout = new LinearLayout(requireContext());
+                        stepEntryLayout.setOrientation(LinearLayout.VERTICAL);
+                        stepEntryLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        stepEntryLayout.setPadding(16, 16, 16, 16);
+                        stepEntryLayout.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.custom_input));
+
+                        // Layout horizontal pour le titre + bouton supprimer
+                        LinearLayout titleRowLayout = new LinearLayout(requireContext());
+                        titleRowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        titleRowLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+
+                        // Titre
+                        TextView stepTitleView = new TextView(requireContext());
+                        stepTitleView.setText(title);
+                        stepTitleView.setTextSize(18);
+                        stepTitleView.setLayoutParams(new LinearLayout.LayoutParams(
+                                0,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                1.0f // prend l'espace disponible
+                        ));
+                        stepTitleView.setPadding(0, 0, 8, 0);
+
+                        // Bouton supprimer
+                        Button deleteButton = new Button(requireContext());
+                        deleteButton.setText("X");
+                        deleteButton.setContentDescription("Delete step");
+                        deleteButton.setTextSize(12);
+                        int widthInDp = 48;
+                        float scale = requireContext().getResources().getDisplayMetrics().density;
+                        int widthInPx = (int) (widthInDp * scale + 0.5f);
+                        deleteButton.setLayoutParams(new LinearLayout.LayoutParams(widthInPx, widthInPx));
+                        deleteButton.setOnClickListener(v -> stepListContainer.removeView(stepEntryLayout));
+
+                        // Ajouter titre + bouton à la ligne
+                        titleRowLayout.addView(stepTitleView);
+                        titleRowLayout.addView(deleteButton);
+
+                        // Description en dessous
+                        TextView stepDescriptionView = new TextView(requireContext());
+                        stepDescriptionView.setText(description);
+                        stepDescriptionView.setTextSize(14);
+                        stepDescriptionView.setPadding(0, 8, 0, 0);
+
+                        // Ajouter tout au layout principal
+                        stepEntryLayout.addView(titleRowLayout);
+                        stepEntryLayout.addView(stepDescriptionView);
+
+                        // Ajouter au conteneur
+                        stepListContainer.addView(stepEntryLayout);
+
+                        // Ajouter à la liste des étapes
+                        Step newStep = new Step(title, description);
+                        stepList.add(newStep);
+
+                        Toast.makeText(getContext(), "Added: " + title, Toast.LENGTH_SHORT).show();
+                    }
+                    else {
                         Toast.makeText(getContext(), "Please fill in both fields", Toast.LENGTH_SHORT).show();
                     }
                 })

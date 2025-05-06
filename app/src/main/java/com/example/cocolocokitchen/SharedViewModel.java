@@ -2,6 +2,7 @@ package com.example.cocolocokitchen;
 
 import android.app.Application;
 import android.database.Cursor;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -38,18 +39,29 @@ public class SharedViewModel extends AndroidViewModel {
                             servings,
                             prepTime,
                             price,
-                            source,
+                            null,
                             R.drawable.aymen_cinnamon_rolls, // Temporary image
+                            null,
                             null,
                             null,
                             false,
                             null,
-                            null
+                            null,
+                            source
                     );
 
                     recipeList.add(recipe);
                 } while (cursor.moveToNext());
                 cursor.close();
+            }
+            if (recipeList.isEmpty()) {
+                Recipe recipe1 = new Recipe("Cinnamon & Orange Flaky Rolls", "An orange CinnamonRoll",
+                        4, 60, "$", null,
+                        R.drawable.aymen_cinnamon_rolls, null,
+                        null, null, false, null, null, null);
+                for (int i = 0; i < 10; i++) {
+                    recipeList.add(recipe1);
+                }
             }
         }
         return recipeList;

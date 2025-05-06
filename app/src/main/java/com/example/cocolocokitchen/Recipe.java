@@ -12,13 +12,16 @@ public class Recipe {
     private int imageResId;  // Drawable resource ID (optional, use if needed)
     private List<Ingredient> ingredientList;
     private List<Utensil> utensilList;
+    private List<Step> stepList;
     private boolean isFavorite;
     private List<String> tags;
     private String group;
+    private String source;
 
     public Recipe(String title, String description, int numberOfServing, int timeInMinute,
                   String costDegree, String imageUrl, int imageResId, List<Ingredient> ingredientList,
-                  List<Utensil> utensilList, boolean isFavorite, List<String> tags, String group) {
+                  List<Utensil> utensilList, List<Step> stepList, boolean isFavorite,
+                  List<String> tags, String group, String source) {
         this . title = title;
         this . description = description;
         this . numberOfServing = numberOfServing;
@@ -28,9 +31,11 @@ public class Recipe {
         this . imageResId = imageResId;
         this . ingredientList = ingredientList;
         this . utensilList = utensilList;
+        this . stepList = stepList;
         this . isFavorite = isFavorite;
         this . tags = tags;
         this . group = group;
+        this . source = source;
     }
 
     public String getTitle() {
