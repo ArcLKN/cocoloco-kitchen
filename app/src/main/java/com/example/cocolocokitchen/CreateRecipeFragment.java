@@ -239,7 +239,7 @@ public class CreateRecipeFragment extends Fragment {
         EditText utensilQuantityInput = dialogView.findViewById(R.id.utensil_quantity_input);
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("Add Ingredient")
+                .setTitle("Add Utensil")
                 .setView(dialogView)
                 .setPositiveButton("Add", (dialog, which) -> {
                     String name = utensilNameInput.getText().toString().trim();
