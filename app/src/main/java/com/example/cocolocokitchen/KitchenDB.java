@@ -302,4 +302,99 @@ public class KitchenDB extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         return sqLiteDatabase.rawQuery("SELECT * FROM " + RECIPE_TABLE_NAME, null);
     }
+
+    private long getOrInsertIngredientId(SQLiteDatabase sqLiteDatabase, Ingredient ingredient) {
+        Cursor cursor = sqLiteDatabase.query(
+                INGREDIENT_TABLE_NAME,
+                new String[]{INGREDIENT_COLUMN_ID},
+                INGREDIENT_COLUMN_NAME + " = ? AND " + INGREDIENT_COLUMN_UNIT + " = ?",
+                new String[]{ingredient.getIngredientTitle(), String.valueOf(ingredient.getIngredientNumber())},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            long id = cursor.getLong(0);
+            cursor.close();
+            return id;
+        } else {
+            cursor.close();
+            ContentValues values = new ContentValues();
+            values.put(INGREDIENT_COLUMN_NAME, ingredient.getIngredientTitle());
+            values.put(INGREDIENT_COLUMN_UNIT, ingredient.getIngredientNumberType());
+            return sqLiteDatabase.insert(INGREDIENT_TABLE_NAME, null, values);
+        }
+    }
+
+    private long getOrInsertUtensilId(SQLiteDatabase db, String name) {
+        Cursor cursor = db.query(
+                UTENSIL_TABLE_NAME,
+                new String[]{UTENSIL_COLUMN_ID},
+                UTENSIL_COLUMN_NAME + " = ?",
+                new String[]{name},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            long id = cursor.getLong(0);
+            cursor.close();
+            return id;
+        } else {
+            cursor.close();
+            ContentValues values = new ContentValues();
+            values.put(UTENSIL_COLUMN_NAME, name);
+            return db.insert(UTENSIL_TABLE_NAME, null, values);
+        }
+    }
+
+    public void insertRecipe(Recipe recipe) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues recipeValues = new ContentValues();
+            recipeValues.put(RECIPE_COLUMN_NAME, recipe.getTitle());
+            recipeValues.put(RECIPE_COLUMN_DESCRIPTION, recipe.getDescription());
+            recipeValues.put(RECIPE_COLUMN_SERVINGS, recipe.getNumberOfServing());
+            recipeValues.put(RECIPE_COLUMN_PREP_TIME, recipe.getTimeInMinute());
+            recipeValues.put(RECIPE_COLUMN_PRICE_LEVEL, recipe.getCostDegree());
+//            recipeValues.put(RECIPE_COLUMN_SOURCE, recipe.getSource());
+
+            long recipeId = db.insert(RECIPE_TABLE_NAME, null, recipeValues);
+
+            // Insert ingredients and link in junction table
+            for (Ingredient ingredient : recipe.getIngredientList()) {
+                long ingId = getOrInsertIngredientId(db, ingredient);
+                ContentValues linkValues = new ContentValues();
+                linkValues.put(RECIPE_COLUMN_ID, recipeId);
+                linkValues.put(INGREDIENT_COLUMN_ID, ingId);
+                linkValues.put(RECIPE_INGREDIENT_QUANTITY, ingredient.getIngredientNumberType());
+                db.insert(RECIPE_INGREDIENT_NAME, null, linkValues);
+            }
+
+            // Insert utensils and link in junction table
+            for (Utensil utensil : recipe.getUtensilList()) {
+                long utId = getOrInsertUtensilId(db, utensil.getUtensilTitle());
+                ContentValues linkValues = new ContentValues();
+                linkValues.put(RECIPE_COLUMN_ID, recipeId);
+                linkValues.put(UTENSIL_COLUMN_ID, utId);
+                linkValues.put(RECIPE_UTENSIL_QUANTITY, utensil.getUtensilNumber());
+                db.insert(RECIPE_UTENSIL_NAME, null, linkValues);
+            }
+
+            // Insert steps
+            int stepNumber = 1;
+            for (Step step : recipe.getSteps()) {
+                ContentValues stepValues = new ContentValues();
+                stepValues.put(STEP_COLUMN_TITLE, step.getStepTitle());
+                stepValues.put(STEP_COLUMN_DESCRIPTION, step.getStepDescription());
+                stepValues.put(STEP_COLUMN_NUMBER, stepNumber++);
+                stepValues.put(RECIPE_COLUMN_ID, recipeId);
+                db.insert(STEP_TABLE_NAME, null, stepValues);
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
 }

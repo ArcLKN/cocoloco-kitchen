@@ -58,6 +58,7 @@ public class Recipe {
     public String getImageUrl() {
         return imageUrl;
     }
+    public List<Step> getSteps() {return stepList;}
 
     // Getter for imageResId
     public int getImageResId() {

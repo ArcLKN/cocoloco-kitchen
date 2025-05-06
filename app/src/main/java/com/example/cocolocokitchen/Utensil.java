@@ -8,4 +8,7 @@ public class Utensil {
         this . title = title;
         this . number = number;
     }
+
+    public String getUtensilTitle() {return title;};
+    public int getUtensilNumber() {return number;};
 }

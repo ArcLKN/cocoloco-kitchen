@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
 
 public class SharedViewModel extends AndroidViewModel {
 
@@ -22,6 +23,8 @@ public class SharedViewModel extends AndroidViewModel {
     public List<Recipe> getRecipeList() {
         if (recipeList.isEmpty()) {
             Cursor cursor = kitchenDB.getAllRecipes();
+            Log.d("SharedViewModel", "Fetching recipes from database");
+            Log.d("SharedViewModel", "Cursor count: " + cursor.getCount());
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {

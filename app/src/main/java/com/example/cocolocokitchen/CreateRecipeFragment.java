@@ -40,6 +40,9 @@ public class CreateRecipeFragment extends Fragment {
 
         Button createRecipeButton = view.findViewById(R.id.create_recipe_button);
         createRecipeButton.setOnClickListener(v -> {
+            //Add all the elements into the database
+
+
             createRecipe(view);
         });
 

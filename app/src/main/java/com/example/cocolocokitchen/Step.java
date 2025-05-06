@@ -8,4 +8,7 @@ public class Step {
         this . title = title;
         this . description = description;
     }
+
+    public String getStepTitle() {return title;};
+    public String getStepDescription() {return description;};
 }

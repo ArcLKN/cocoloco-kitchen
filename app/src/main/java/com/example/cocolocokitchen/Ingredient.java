@@ -12,4 +12,8 @@ public class Ingredient {
         this . number = number;
         this . numberType = numberType;
     }
+
+    public String getIngredientTitle() {return title;};
+    public int getIngredientNumber() {return number;};
+    public String getIngredientNumberType() {return numberType;};
 }
