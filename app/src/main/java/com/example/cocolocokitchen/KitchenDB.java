@@ -13,6 +13,9 @@ public class KitchenDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "kitchen.db";
     private static final int DATABASE_VERSION = 1;
 
+
+
+
     //Initialize the recipes table
     public static final String RECIPE_TABLE_NAME = "recipes";
     public static final String RECIPE_COLUMN_ID = "id_recipe";
@@ -89,6 +92,9 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String RECIPE_TAG_NAME = "Recipe_Tag";
 
     public static final String RECIPE_GROUP_NAME = "Recipe_Group";
+
+
+
 
     //Create the tables
     public static final String RECIPE_TABLE_CREATE =
@@ -212,6 +218,9 @@ public class KitchenDB extends SQLiteOpenHelper {
                     "FOREIGN KEY (" + GROUP_COLUMN_ID + ") REFERENCES \"" + GROUP_TABLE_NAME + "\" (" + GROUP_COLUMN_ID + ")" +
                     ");";
 
+
+
+
     //Constructor
     public KitchenDB ( Context context ) {
         super ( context , DATABASE_NAME , null , DATABASE_VERSION );
@@ -220,6 +229,36 @@ public class KitchenDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(RECIPE_TABLE_CREATE);
+
+        // Insert initial dummy recipe(s)
+        sqLiteDatabase.execSQL("INSERT INTO " + RECIPE_TABLE_NAME + " (" +
+                RECIPE_COLUMN_NAME + ", " +
+                RECIPE_COLUMN_DESCRIPTION + ", " +
+                RECIPE_COLUMN_SERVINGS + ", " +
+                RECIPE_COLUMN_PREP_TIME + ", " +
+                RECIPE_COLUMN_PRICE_LEVEL + ", " +
+                RECIPE_COLUMN_SOURCE + ") VALUES (" +
+                "'Cinnamon Rolls'," +
+                "'Delicious cinnamon rolls with icing.'," +
+                "4," +
+                "30," +
+                "'$$'," +
+                "'Grandma’s Kitchen');");
+
+        sqLiteDatabase.execSQL("INSERT INTO " + RECIPE_TABLE_NAME + " (" +
+                RECIPE_COLUMN_NAME + ", " +
+                RECIPE_COLUMN_DESCRIPTION + ", " +
+                RECIPE_COLUMN_SERVINGS + ", " +
+                RECIPE_COLUMN_PREP_TIME + ", " +
+                RECIPE_COLUMN_PRICE_LEVEL + ", " +
+                RECIPE_COLUMN_SOURCE + ") VALUES (" +
+                "'Avocado Toast'," +
+                "'Crunchy toast with smashed avocado and toppings.'," +
+                "2," +
+                "10," +
+                "'$'," +
+                "'Instagram');");
+
         sqLiteDatabase.execSQL(STEP_TABLE_CREATE);
         sqLiteDatabase.execSQL(INGREDIENT_TABLE_CREATE);
         sqLiteDatabase.execSQL(UTENSIL_TABLE_CREATE);
@@ -255,6 +294,9 @@ public class KitchenDB extends SQLiteOpenHelper {
 
         onCreate(sqLiteDatabase);
     }
+
+
+
 
     public Cursor getAllRecipes() {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
