@@ -233,7 +233,7 @@ public class CreateRecipeFragment extends Fragment {
     }
     private void showAddUtensilDialog() {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_ingredient, null);
+        View dialogView = inflater.inflate(R.layout.dialog_add_utensil, null);
 
         EditText utensilNameInput = dialogView.findViewById(R.id.utensil_name_input);
         EditText utensilQuantityInput = dialogView.findViewById(R.id.utensil_quantity_input);
