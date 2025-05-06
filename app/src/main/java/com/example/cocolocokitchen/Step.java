@@ -1,13 +1,11 @@
 package com.example.cocolocokitchen;
 
-import java.util.List;
-
-public class Ingredient {
+public class Step {
     private String title;
     private int number;
     private String numberType;
 
-    public Ingredient(String title, int number, String numberType) {
+    public Step(String title, int number, String numberType) {
         this . title = title;
         this . number = number;
         this . numberType = numberType;
