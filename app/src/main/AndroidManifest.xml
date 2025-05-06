@@ -12,9 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CocoLocoKitchen"
         tools:targetApi="31">
-        <activity
-            android:name=".RecipesActivity"
-            android:exported="false" />
+        <activity android:name=".RecipeView"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
