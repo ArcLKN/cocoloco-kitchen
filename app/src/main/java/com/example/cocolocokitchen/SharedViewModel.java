@@ -42,6 +42,7 @@ public class SharedViewModel extends AndroidViewModel {
                             R.drawable.aymen_cinnamon_rolls, // Temporary image
                             null,
                             null,
+                            null,
                             false,
                             null,
                             null
