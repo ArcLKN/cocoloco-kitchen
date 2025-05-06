@@ -125,7 +125,7 @@ public class KitchenDB extends SQLiteOpenHelper {
                     ");";
 
     public static final String GROUP_TABLE_CREATE =
-            "CREATE TABLE " + GROUP_TABLE_NAME + " (" +
+            "CREATE TABLE \"" + GROUP_TABLE_NAME + "\" (" +
                     GROUP_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     GROUP_COLUMN_NAME + " TEXT, " +
                     GROUP_COLUMN_COLOR + " TEXT" +
@@ -201,7 +201,7 @@ public class KitchenDB extends SQLiteOpenHelper {
                     GROUP_COLUMN_ID + " INTEGER," +
                     "PRIMARY KEY (" + RECIPE_COLUMN_ID + ", " + GROUP_COLUMN_ID + ")," +
                     "FOREIGN KEY (" + RECIPE_COLUMN_ID + ") REFERENCES " + RECIPE_TABLE_NAME + "(" + RECIPE_COLUMN_ID + ")," +
-                    "FOREIGN KEY (" + GROUP_COLUMN_ID + ") REFERENCES " + GROUP_TABLE_NAME + "(" + GROUP_COLUMN_ID + ")" +
+                    "FOREIGN KEY (" + GROUP_COLUMN_ID + ") REFERENCES \"" + GROUP_TABLE_NAME + "\" (" + GROUP_COLUMN_ID + ")" +
                     ");";
 
     //Constructor
@@ -239,7 +239,7 @@ public class KitchenDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + INGREDIENT_TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + UTENSIL_TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TAG_TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + GROUP_TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS \"" + GROUP_TABLE_NAME + "\"");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RATING_TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + IMAGE_TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FAV_TABLE_NAME);
