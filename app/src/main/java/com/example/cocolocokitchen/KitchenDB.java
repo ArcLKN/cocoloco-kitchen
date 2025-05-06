@@ -1,4 +1,8 @@
+package com.example.cocolocokitchen;
+
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -70,6 +74,10 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String PLANNING_COLUMN_ID = "id_planning";
     public static final String PLANNING_COLUMN_DATE = "date";
     public static final String PLANNING_COLUMN_TIME = "time_of_day";
+
+    //Initialize grocery table
+    public static final String GROCERY_TABLE_NAME = "groceries";
+    public static final String GROCERY_COLUMN_ID = "id_grocery";
 
     //Initialize junction tables
     public static final String RECIPE_INGREDIENT_NAME = "Recipe_Ingredient";
@@ -209,10 +217,6 @@ public class KitchenDB extends SQLiteOpenHelper {
         super ( context , DATABASE_NAME , null , DATABASE_VERSION );
     }
 
-    public KitchenDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(RECIPE_TABLE_CREATE);
@@ -250,5 +254,10 @@ public class KitchenDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RECIPE_GROUP_NAME);
 
         onCreate(sqLiteDatabase);
+    }
+
+    public Cursor getAllRecipes() {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + RECIPE_TABLE_NAME, null);
     }
 }

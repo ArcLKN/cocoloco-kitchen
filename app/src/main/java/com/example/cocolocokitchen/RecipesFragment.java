@@ -46,6 +46,7 @@ public class RecipesFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_recipes, container, false);
 
+        //Assigner toolbar en haut
         Toolbar toolbar = view.findViewById(R.id.recipes_toolbar);
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
         activity.setSupportActionBar(toolbar);
@@ -83,8 +84,10 @@ public class RecipesFragment extends Fragment {
             dialog.show();
         });
 
+        //Get recycler view
         RecyclerView recyclerView = view.findViewById(R.id.recipes_recycler_view);
 
+        //
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         List<Recipe> recipes = viewModel.getRecipeList();
 
