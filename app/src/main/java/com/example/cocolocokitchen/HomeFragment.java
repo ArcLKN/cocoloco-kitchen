@@ -26,18 +26,14 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Initialize views
         editTextIngredient = rootView.findViewById(R.id.editTextIngredient);
         buttonAdd = rootView.findViewById(R.id.buttonAdd);
         checkboxContainer = rootView.findViewById(R.id.checkboxContainer);
 
-        // Initialize the database handler
         kitchenDB = new KitchenDB(getContext());
 
-        // Set up button click listener
         buttonAdd.setOnClickListener(v -> addIngredientToList());
 
         return rootView;
@@ -68,7 +64,6 @@ public class HomeFragment extends Fragment {
             newCheckBox.setText(ingredientName);
             newCheckBox.setTag(ingredientName);
 
-            // Add listener for when checkbox is checked
             newCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     checkboxContainer.removeView(buttonView);
@@ -83,7 +78,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // ✅ FIXED: Method is outside of any other method
     private void removeIngredientFromDatabase(String ingredientName) {
         SQLiteDatabase db = kitchenDB.getWritableDatabase();
 
