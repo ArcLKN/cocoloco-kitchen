@@ -48,7 +48,14 @@
             android:textSize="16sp"
             android:textAlignment="center"
             android:gravity="center"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="40dp" />
+
+        <ImageView
+            android:id="@+id/walker_image"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/walker" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,14 +63,14 @@
             android:orientation="vertical"
             android:layout_marginTop="15dp"
             android:padding="16dp"
-            android:background="#EAE7DC">
+            android:background="#FBA1BC">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Your Statistics"
                 android:textSize="18sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/matipo"
                 android:textColor="@color/black"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="20dp"/>
@@ -118,7 +125,7 @@
             android:layout_height="wrap_content"
             android:text="Account Settings"
             android:textSize="20sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/matipo"
             android:textColor="@color/black"
             android:layout_marginTop="17dp" />
 
@@ -202,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:text="Display"
                 android:textSize="20sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/matipo"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp" />
 
@@ -369,7 +376,7 @@
                 android:layout_height="wrap_content"
                 android:text="About"
                 android:textSize="20sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/matipo"
                 android:textColor="@color/black"
                 android:layout_marginTop="1dp" />
 
@@ -527,6 +534,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DECONNEXION"
+            android:fontFamily="@font/matipo"
             android:textSize="30sp"
             android:textColor="@android:color/white"
             android:layout_centerVertical="true"

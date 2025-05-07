@@ -31,7 +31,23 @@
                 android:layout_height="wrap_content"
                 android:text="What do you want to eat today ?"
                 android:textSize="16sp"
-                android:gravity="center" />
+                android:gravity="center"
+                android:layout_marginBottom="40dp"/>
+
+            <ImageView
+                android:id="@+id/walker_image"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cuisto" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp"
+            android:padding="16dp"
+            android:background="#85B5F4">
 
             <TextView
                 android:id="@+id/grocery_title"
@@ -39,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="Grocery List"
                 android:fontFamily="@font/matipo"
-                android:layout_marginTop="@dimen/global_margin"
+                android:layout_marginTop="15dp"
                 android:textSize="18sp"/>
 
             <CheckBox
@@ -56,6 +72,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Carrots (1)"/>
+
+        </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
