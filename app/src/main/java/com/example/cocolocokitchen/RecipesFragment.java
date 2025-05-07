@@ -35,7 +35,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipesFragment extends Fragment {
+public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener {
 
     private RecipeAdapter recipeAdapter;
 
@@ -119,6 +119,7 @@ public class RecipesFragment extends Fragment {
         List<Recipe> recipes = viewModel.getRecipeList();
 
         recipeAdapter = new RecipeAdapter(requireContext(), recipes);
+        recipeAdapter.setOnRecipeClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(recipeAdapter);
 
@@ -137,4 +138,8 @@ public class RecipesFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onRecipeClick(Recipe recipe) {
+
+    }
 }

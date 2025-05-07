@@ -9,6 +9,10 @@ public class Step {
         this . description = description;
     }
 
-    public String getStepTitle() {return title;};
-    public String getStepDescription() {return description;};
+    public String getName() {
+        return title;
+    }
+    public String getDescription() {
+        return description;
+    }
 }

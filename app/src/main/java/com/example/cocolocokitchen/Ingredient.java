@@ -13,7 +13,13 @@ public class Ingredient {
         this . numberType = numberType;
     }
 
-    public String getIngredientTitle() {return title;};
-    public int getIngredientNumber() {return number;};
-    public String getIngredientNumberType() {return numberType;};
+    public String getName() {
+        return title;
+    }
+    public int getQuantity() {
+        return number;
+    }
+    public String getQuantityType() {
+        return numberType;
+    }
 }

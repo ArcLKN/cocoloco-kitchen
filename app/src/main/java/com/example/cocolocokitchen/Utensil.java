@@ -9,6 +9,10 @@ public class Utensil {
         this . number = number;
     }
 
-    public String getUtensilTitle() {return title;};
-    public int getUtensilNumber() {return number;};
+    public String getName() {
+        return title;
+    }
+    public int getQuantity() {
+        return number;
+    }
 }

@@ -308,7 +308,7 @@ public class KitchenDB extends SQLiteOpenHelper {
                 INGREDIENT_TABLE_NAME,
                 new String[]{INGREDIENT_COLUMN_ID},
                 INGREDIENT_COLUMN_NAME + " = ? AND " + INGREDIENT_COLUMN_UNIT + " = ?",
-                new String[]{ingredient.getIngredientTitle(), String.valueOf(ingredient.getIngredientNumber())},
+                new String[]{ingredient.getName(), String.valueOf(ingredient.getQuantity())},
                 null, null, null
         );
 
@@ -319,8 +319,8 @@ public class KitchenDB extends SQLiteOpenHelper {
         } else {
             cursor.close();
             ContentValues values = new ContentValues();
-            values.put(INGREDIENT_COLUMN_NAME, ingredient.getIngredientTitle());
-            values.put(INGREDIENT_COLUMN_UNIT, ingredient.getIngredientNumberType());
+            values.put(INGREDIENT_COLUMN_NAME, ingredient.getName());
+            values.put(INGREDIENT_COLUMN_UNIT, ingredient.getQuantityType());
             return sqLiteDatabase.insert(INGREDIENT_TABLE_NAME, null, values);
         }
     }
@@ -366,17 +366,17 @@ public class KitchenDB extends SQLiteOpenHelper {
                 ContentValues linkValues = new ContentValues();
                 linkValues.put(RECIPE_COLUMN_ID, recipeId);
                 linkValues.put(INGREDIENT_COLUMN_ID, ingId);
-                linkValues.put(RECIPE_INGREDIENT_QUANTITY, ingredient.getIngredientNumberType());
+                linkValues.put(RECIPE_INGREDIENT_QUANTITY, ingredient.getQuantityType());
                 db.insert(RECIPE_INGREDIENT_NAME, null, linkValues);
             }
 
             // Insert utensils and link in junction table
             for (Utensil utensil : recipe.getUtensilList()) {
-                long utId = getOrInsertUtensilId(db, utensil.getUtensilTitle());
+                long utId = getOrInsertUtensilId(db, utensil.getName());
                 ContentValues linkValues = new ContentValues();
                 linkValues.put(RECIPE_COLUMN_ID, recipeId);
                 linkValues.put(UTENSIL_COLUMN_ID, utId);
-                linkValues.put(RECIPE_UTENSIL_QUANTITY, utensil.getUtensilNumber());
+                linkValues.put(RECIPE_UTENSIL_QUANTITY, utensil.getQuantity());
                 db.insert(RECIPE_UTENSIL_NAME, null, linkValues);
             }
 
@@ -384,8 +384,8 @@ public class KitchenDB extends SQLiteOpenHelper {
             int stepNumber = 1;
             for (Step step : recipe.getSteps()) {
                 ContentValues stepValues = new ContentValues();
-                stepValues.put(STEP_COLUMN_TITLE, step.getStepTitle());
-                stepValues.put(STEP_COLUMN_DESCRIPTION, step.getStepDescription());
+                stepValues.put(STEP_COLUMN_TITLE, step.getName());
+                stepValues.put(STEP_COLUMN_DESCRIPTION, step.getDescription());
                 stepValues.put(STEP_COLUMN_NUMBER, stepNumber++);
                 stepValues.put(RECIPE_COLUMN_ID, recipeId);
                 db.insert(STEP_TABLE_NAME, null, stepValues);

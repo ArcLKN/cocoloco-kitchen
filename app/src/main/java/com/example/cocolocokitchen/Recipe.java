@@ -75,6 +75,9 @@ public class Recipe {
     public List<Utensil> getUtensilList() {
         return utensilList;
     }
+    public List<Step> getStepList() {
+        return stepList;
+    }
 
     public boolean isFavorite() {
         return isFavorite;
@@ -86,6 +89,9 @@ public class Recipe {
 
     public String getGroup() {
         return group;
+    }
+    public String getSource() {
+        return source;
     }
 
 
