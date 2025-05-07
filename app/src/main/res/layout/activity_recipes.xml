@@ -75,7 +75,7 @@
     <View
         android:id="@+id/clear_space"
         android:layout_width="match_parent"
-        android:layout_height="96dp"
+        android:layout_height="138dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
