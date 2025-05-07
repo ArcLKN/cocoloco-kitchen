@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CalendarFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/matipo"
+            android:gravity="center"
+            android:text="CALENDRIER"
+            android:textSize="28sp" />
+
+        <Spinner
+            android:id="@+id/week_template_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/select_start_date_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Choisir la date de début" />
+
+        <TextView
+            android:id="@+id/selected_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="Aucune date sélectionnée" />
+
+        <Button
+            android:id="@+id/apply_week_template_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#85B5F4"
+            android:text="ADD A WEAK !!"
+            android:textColor="@android:color/white" />
+
+        <CalendarView
+            android:id="@+id/calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/planning_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#f0f0f0"
+            android:padding="8dp"
+            android:text="Sélectionnez une date pour voir le planning"
+            android:textSize="16sp" />
+
+        <!-- Bouton de test pour insérer une semaine type de test -->
+        <Button
+            android:id="@+id/test_button"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#85B5F4"
+            android:text="TEST : Créer une semaine type"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+</FrameLayout>
