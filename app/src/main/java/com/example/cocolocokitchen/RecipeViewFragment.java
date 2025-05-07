@@ -8,8 +8,11 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -91,6 +94,22 @@ public class RecipeViewFragment extends Fragment {
 
                 TextView costText = view.findViewById(R.id.recipe_cost);
                 costText.setText(recipe.getCostDegree());
+
+                ImageView imageView = view.findViewById(R.id.recipe_image_fragment);
+                String imageUrl = recipe.getImageUrl();
+                int imageResId = recipe.getImageResId();
+
+                if (imageUrl != null && !imageUrl.isEmpty()) {
+                    // Load from URL
+                    Glide.with(requireContext())
+                            .load(imageUrl)
+                            .into(imageView);
+                } else {
+                    // Load from drawable resource
+                    Glide.with(requireContext())
+                            .load(imageResId)
+                            .into(imageView);
+                }
 
                 LinearLayout utensilContainer = view.findViewById(R.id.recipe_utensil_container);
                 List<Utensil> utensilList = recipe.getUtensilList();

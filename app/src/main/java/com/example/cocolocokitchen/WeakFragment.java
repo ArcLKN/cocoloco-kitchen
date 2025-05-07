@@ -36,7 +36,7 @@ public class WeakFragment extends Fragment {
         TextView planningDetails = rootView.findViewById(R.id.planning_details);
         CalendarView calendarView = rootView.findViewById(R.id.calendar);
 
-        String[] fakeWeekTemplates = {"Healthy weak", "Vegetarian weak", "Fat weak", "Sweat weak" };
+        String[] fakeWeekTemplates = {"Healthy week", "Vegetarian week", "Fat week", "Sweat week" };
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_spinner_item, fakeWeekTemplates);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:backgroundTint="#85B5F4"
-            android:text="ADD A WEAK !!"
+            android:text="ADD A WEEK !!"
             android:textColor="@android:color/white" />
 
         <CalendarView

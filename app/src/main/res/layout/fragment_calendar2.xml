@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#85B5F4"
-            android:text="Add a weak" />
+            android:text="Add a week" />
 
         <FrameLayout
             android:id="@+id/fragment_container_weak"
