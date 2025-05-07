@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CalendarFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:fontFamily="@font/matipo"
+            android:gravity="center"
+            android:text="CALENDRIER"
+            android:textSize="28sp"
+            />
+
+
+        <Button
+            android:id="@+id/btn_add_weak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#85B5F4"
+            android:text="Add a week" />
+
+        <FrameLayout
+            android:id="@+id/fragment_container_weak"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+
+
+        <TextView
+            android:id="@+id/selected_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="Aucune date sélectionnée" />
+
+
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/planning_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#f0f0f0"
+            android:padding="8dp"
+            android:text="Select a day to show the planning"
+            android:textSize="16sp" />
+
+
+    </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

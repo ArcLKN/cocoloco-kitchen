@@ -76,6 +76,7 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String PLANNING_TABLE_NAME = "planning";
     public static final String PLANNING_COLUMN_ID = "id_planning";
     public static final String PLANNING_COLUMN_DATE = "date";
+    public static final String PLANNING_COLUMN_WEEK_TEMPLATE_ID = "week_template_id";
     public static final String PLANNING_COLUMN_TIME = "time_of_day";
 
     //Initialize grocery table
@@ -98,6 +99,17 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String RECIPE_GROUP_NAME = "Recipe_Group";
 
 
+
+
+    public static final String WEEK_TEMPLATE_TABLE_NAME = "week_templates";
+    public static final String WEEK_TEMPLATE_COLUMN_ID = "id_week_template";
+    public static final String WEEK_TEMPLATE_COLUMN_NAME = "name";
+
+
+    public static final String WEEK_TEMPLATE_RECIPE_TABLE_NAME = "week_template_recipes";
+    public static final String WEEK_TEMPLATE_RECIPE_COLUMN_ID = "id_week_template_recipe";
+    public static final String WEEK_TEMPLATE_RECIPE_COLUMN_DAY = "day_of_week"; // Lundi, Mardi, etc.
+    public static final String WEEK_TEMPLATE_RECIPE_COLUMN_TIME = "time_of_day"; // matin, midi, etc.
 
 
     //Create the tables
@@ -180,6 +192,7 @@ public class KitchenDB extends SQLiteOpenHelper {
                     PLANNING_COLUMN_DATE + " TEXT, " +
                     PLANNING_COLUMN_TIME + " TEXT, " +
                     RECIPE_COLUMN_ID + " INTEGER, " +
+                    PLANNING_COLUMN_WEEK_TEMPLATE_ID + " INTEGER, " + // Ajout ici !
                     "FOREIGN KEY (" + RECIPE_COLUMN_ID + ") REFERENCES " + RECIPE_TABLE_NAME + "(" + RECIPE_COLUMN_ID + ")" +
                     ");";
 
@@ -229,6 +242,23 @@ public class KitchenDB extends SQLiteOpenHelper {
                     "PRIMARY KEY (" + RECIPE_COLUMN_ID + ", " + GROUP_COLUMN_ID + ")," +
                     "FOREIGN KEY (" + RECIPE_COLUMN_ID + ") REFERENCES " + RECIPE_TABLE_NAME + "(" + RECIPE_COLUMN_ID + ")," +
                     "FOREIGN KEY (" + GROUP_COLUMN_ID + ") REFERENCES \"" + GROUP_TABLE_NAME + "\" (" + GROUP_COLUMN_ID + ")" +
+                    ");";
+
+    public static final String WEEK_TEMPLATE_TABLE_CREATE =
+            "CREATE TABLE " + WEEK_TEMPLATE_TABLE_NAME + " (" +
+                    WEEK_TEMPLATE_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    WEEK_TEMPLATE_COLUMN_NAME + " TEXT" +
+                    ");";
+
+    public static final String WEEK_TEMPLATE_RECIPE_TABLE_CREATE =
+            "CREATE TABLE " + WEEK_TEMPLATE_RECIPE_TABLE_NAME + " (" +
+                    WEEK_TEMPLATE_RECIPE_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    WEEK_TEMPLATE_COLUMN_ID + " INTEGER, " +
+                    RECIPE_COLUMN_ID + " INTEGER, " +
+                    WEEK_TEMPLATE_RECIPE_COLUMN_DAY + " TEXT, " +
+                    WEEK_TEMPLATE_RECIPE_COLUMN_TIME + " TEXT, " +
+                    "FOREIGN KEY (" + WEEK_TEMPLATE_COLUMN_ID + ") REFERENCES " + WEEK_TEMPLATE_TABLE_NAME + "(" + WEEK_TEMPLATE_COLUMN_ID + "), " +
+                    "FOREIGN KEY (" + RECIPE_COLUMN_ID + ") REFERENCES " + RECIPE_TABLE_NAME + "(" + RECIPE_COLUMN_ID + ")" +
                     ");";
 
 
@@ -286,6 +316,8 @@ public class KitchenDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(RECIPE_UTENSIL_TABLE);
         sqLiteDatabase.execSQL(RECIPE_TAG_TABLE);
         sqLiteDatabase.execSQL(RECIPE_GROUP_TABLE);
+        sqLiteDatabase.execSQL(WEEK_TEMPLATE_TABLE_CREATE);
+        sqLiteDatabase.execSQL(WEEK_TEMPLATE_RECIPE_TABLE_CREATE);
     }
 
     @Override
@@ -305,6 +337,8 @@ public class KitchenDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RECIPE_UTENSIL_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RECIPE_TAG_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RECIPE_GROUP_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WEEK_TEMPLATE_RECIPE_TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WEEK_TEMPLATE_TABLE_NAME);
 
         onCreate(sqLiteDatabase);
     }
@@ -419,4 +453,82 @@ public class KitchenDB extends SQLiteOpenHelper {
             db.close();
         }
     }
+    // Méthode pour appliquer une semaine type au planning
+    public void applyWeekTemplateToCalendar(long weekTemplateId, String startDate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        try {
+            calendar.setTime(sdf.parse(startDate));
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Récupère toutes les entrées de la semaine type
+        Cursor cursor = db.rawQuery(
+                "SELECT " +
+                        KitchenDB.WEEK_TEMPLATE_RECIPE_COLUMN_DAY + ", " +
+                        KitchenDB.WEEK_TEMPLATE_RECIPE_COLUMN_TIME + ", " +
+                        KitchenDB.RECIPE_COLUMN_ID +
+                        " FROM " + KitchenDB.WEEK_TEMPLATE_RECIPE_TABLE_NAME +
+                        " WHERE " + KitchenDB.WEEK_TEMPLATE_COLUMN_ID + "=?",
+                new String[]{String.valueOf(weekTemplateId)}
+        );
+
+        while (cursor.moveToNext()) {
+            String dayOfWeek = cursor.getString(0); // ex: "Lundi"
+            String timeOfDay = cursor.getString(1); // ex: "midi"
+            long recipeId = cursor.getLong(2);
+
+            // Calcule la date réelle
+            int dayOffset = getDayOffset(dayOfWeek); // ex: "Lundi" = 0, "Mardi" = 1, etc.
+            java.util.Calendar dayCalendar = (java.util.Calendar) calendar.clone();
+            dayCalendar.add(java.util.Calendar.DAY_OF_MONTH, dayOffset);
+
+            String realDate = sdf.format(dayCalendar.getTime());
+
+            // Insère dans le planning
+            ContentValues values = new ContentValues();
+            values.put(KitchenDB.PLANNING_COLUMN_DATE, realDate);
+            values.put(KitchenDB.PLANNING_COLUMN_TIME, timeOfDay);
+            values.put(KitchenDB.RECIPE_COLUMN_ID, recipeId);
+            db.insert(KitchenDB.PLANNING_TABLE_NAME, null, values);
+        }
+        cursor.close();
+    }
+
+    // Méthode utilitaire pour convertir "Lundi" en 0, "Mardi" en 1, etc.
+    private int getDayOffset(String dayOfWeek) {
+        switch (dayOfWeek.toLowerCase()) {
+            case "lundi": return 0;
+            case "mardi": return 1;
+            case "mercredi": return 2;
+            case "jeudi": return 3;
+            case "vendredi": return 4;
+            case "samedi": return 5;
+            case "dimanche": return 6;
+            default: return 0;
+        }
+    }
+
+    // Méthode pour ajouter une semaine type
+    public long addWeekTemplate(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(WEEK_TEMPLATE_COLUMN_NAME, name);
+        return db.insert(WEEK_TEMPLATE_TABLE_NAME, null, values);
+    }
+
+    // Méthode pour ajouter une recette à une semaine type
+    public void addRecipeToWeekTemplate(long weekTemplateId, long recipeId, String dayOfWeek, String timeOfDay) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(WEEK_TEMPLATE_COLUMN_ID, weekTemplateId);
+        values.put(RECIPE_COLUMN_ID, recipeId);
+        values.put(WEEK_TEMPLATE_RECIPE_COLUMN_DAY, dayOfWeek);
+        values.put(WEEK_TEMPLATE_RECIPE_COLUMN_TIME, timeOfDay);
+        db.insert(WEEK_TEMPLATE_RECIPE_TABLE_NAME, null, values);
+    }
+
 }

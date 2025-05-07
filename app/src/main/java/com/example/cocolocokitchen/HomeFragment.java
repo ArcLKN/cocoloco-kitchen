@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.widget.Button;
 
 public class HomeFragment extends Fragment {
     private EditText editTextIngredient;
@@ -36,6 +38,16 @@ public class HomeFragment extends Fragment {
 
         buttonAdd.setOnClickListener(v -> addIngredientToList());
 
+        Button btnMore = rootView.findViewById(R.id.moreButton);
+
+        // On définit le comportement au clic
+        btnMore.setOnClickListener(v -> {
+            Fragment CalendarFragment2 = new CalendarFragment2();
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, CalendarFragment2);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
         return rootView;
     }
 
