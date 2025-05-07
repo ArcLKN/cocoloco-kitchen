@@ -360,6 +360,14 @@ public class KitchenDB extends SQLiteOpenHelper {
         }
     }
 
+    public void insertIngredient(SQLiteDatabase db, Ingredient ingredient, long recipeId) {
+        ContentValues values = new ContentValues();
+        values.put("recipe_id", recipeId);
+        values.put("name", ingredient.getName());
+        values.put("quantity", ingredient.getQuantity());
+        db.insert("ingredients", null, values);
+    }
+
     public void insertRecipe(Recipe recipe) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
