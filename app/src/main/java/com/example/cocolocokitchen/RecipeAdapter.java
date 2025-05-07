@@ -13,17 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private Context context;
     private List<Recipe> recipeList;
+    private List<Recipe> fullRecipeList;
 
     private int currentViewType = -1;
 
     public RecipeAdapter(Context context, List<Recipe> recipeList) {
         this.context = context;
         this.recipeList = recipeList;
+        this.fullRecipeList = new ArrayList<>(recipeList);   // full original copy
     }
 
     @NonNull
@@ -74,6 +77,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     @Override
     public int getItemCount() {
         return recipeList.size();
+    }
+
+    public void filter(String query) {
+        List<Recipe> filteredList = new ArrayList<>();
+        for (Recipe recipe : fullRecipeList) {
+            if (recipe.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(recipe);
+            }
+        }
+        recipeList = filteredList;
+        notifyDataSetChanged();
     }
 
     // We call this function to change the variable currentViewType to globally change

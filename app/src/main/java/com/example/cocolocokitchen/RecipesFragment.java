@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -58,6 +59,30 @@ public class RecipesFragment extends Fragment {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.recipes_menu, menu);
+
+//                MenuItem searchItem = menu.findItem(R.id.recipes_action_search);
+//                if (searchItem != null) {
+//                    SearchView searchView = (SearchView) searchItem.getActionView();
+//                    if (searchView != null) {
+//                        searchView.setQueryHint("Search recipes...");
+//                        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//                            @Override
+//                            public boolean onQueryTextSubmit(String query) {
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onQueryTextChange(String newText) {
+//                                recipeAdapter.filter(newText);
+//                                return true;
+//                            }
+//                        });
+//                    } else {
+//                        Log.e("RecipesFragment", "SearchView is null. Check if the menu item uses actionViewClass or app:actionViewClass.");
+//                    }
+//                } else {
+//                    Log.e("RecipesFragment", "MenuItem recipes_action_search not found.");
+//                }
             }
 
             @Override
