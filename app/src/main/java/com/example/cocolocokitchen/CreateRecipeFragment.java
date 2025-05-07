@@ -30,6 +30,8 @@ import java.util.List;
 
 public class CreateRecipeFragment extends Fragment {
 
+    private KitchenDB kitchenDB;
+
     LinearLayout ingredientListContainer;
     List<Ingredient> ingredientList = new ArrayList<>();
 
@@ -51,9 +53,17 @@ public class CreateRecipeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_create_recipe, container, false);
 
+        kitchenDB = new KitchenDB(getContext());
+
         Button createRecipeButton = view.findViewById(R.id.create_recipe_button);
         createRecipeButton.setOnClickListener(v -> {
             createRecipe(view);
+            SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+            List<Recipe> recipes = viewModel.getRecipeList();
+            Recipe newRecipe = recipes.get(recipes.size() - 1); // get the last-added one
+
+            // Insert into the database
+            kitchenDB.insertRecipe(newRecipe);
         });
 
         ingredientListContainer = view.findViewById(R.id.create_recipe_ingredient_list_container);

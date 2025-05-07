@@ -89,7 +89,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         //Get recycler view
         RecyclerView recyclerView = view.findViewById(R.id.recipes_recycler_view);
 
-        //
+
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         List<Recipe> recipes = viewModel.getRecipeList();
 
