@@ -81,6 +81,10 @@ public class KitchenDB extends SQLiteOpenHelper {
     //Initialize grocery table
     public static final String GROCERY_TABLE_NAME = "groceries";
     public static final String GROCERY_COLUMN_ID = "id_grocery";
+    public static final String GROCERY_COLUMN_NAME = "name";
+    public static final String GROCERY_COLUMN_QUANTITY = "quantity";
+    public static final String GROCERY_COLUMN_UNIT = "unit";
+    public static final String GROCERY_COLUMN_CHECKED = "checked"; // 0 = not bought, 1 = bought
 
     //Initialize junction tables
     public static final String RECIPE_INGREDIENT_NAME = "Recipe_Ingredient";
@@ -179,6 +183,15 @@ public class KitchenDB extends SQLiteOpenHelper {
                     "FOREIGN KEY (" + RECIPE_COLUMN_ID + ") REFERENCES " + RECIPE_TABLE_NAME + "(" + RECIPE_COLUMN_ID + ")" +
                     ");";
 
+    public static final String GROCERY_TABLE_CREATE =
+            "CREATE TABLE " + GROCERY_TABLE_NAME + " (" +
+                    GROCERY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    GROCERY_COLUMN_NAME + " TEXT, " +
+                    GROCERY_COLUMN_QUANTITY + " REAL, " +
+                    GROCERY_COLUMN_UNIT + " TEXT, " +
+                    GROCERY_COLUMN_CHECKED + " INTEGER DEFAULT 0" +
+                    ");";
+
     //Junction tables
     public static final String RECIPE_INGREDIENT_TABLE =
             "CREATE TABLE " + RECIPE_INGREDIENT_NAME + " (" +
@@ -268,6 +281,7 @@ public class KitchenDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(IMAGE_TABLE_CREATE);
         sqLiteDatabase.execSQL(FAV_TABLE_CREATE);
         sqLiteDatabase.execSQL(PLANNING_TABLE_CREATE);
+        sqLiteDatabase.execSQL(GROCERY_TABLE_CREATE);
         sqLiteDatabase.execSQL(RECIPE_INGREDIENT_TABLE);
         sqLiteDatabase.execSQL(RECIPE_UTENSIL_TABLE);
         sqLiteDatabase.execSQL(RECIPE_TAG_TABLE);
