@@ -8,4 +8,11 @@ public class Utensil {
         this . title = title;
         this . number = number;
     }
+
+    public String getName() {
+        return title;
+    }
+    public int getQuantity() {
+        return number;
+    }
 }
