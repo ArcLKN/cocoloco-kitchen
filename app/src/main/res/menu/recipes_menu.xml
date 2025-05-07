@@ -5,7 +5,8 @@
         android:id="@+id/recipes_action_search"
         android:icon="@drawable/icon_search"
         android:title="Search"
-        app:showAsAction="always" />
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <group android:id="@+id/group">
         <item android:id="@+id/recipes_group_item_edit"

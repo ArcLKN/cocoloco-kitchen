@@ -1,65 +1,51 @@
 package com.example.cocolocokitchen;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CreateRecipeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CreateRecipeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private KitchenDB kitchenDB;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    LinearLayout ingredientListContainer;
+    List<Ingredient> ingredientList = new ArrayList<>();
 
-    public CreateRecipeFragment() {
-        // Required empty public constructor
-    }
+    LinearLayout utensilListContainer;
+    List<Utensil> utensilList = new ArrayList<>();
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateRecipeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreateRecipeFragment newInstance(String param1, String param2) {
-        CreateRecipeFragment fragment = new CreateRecipeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    LinearLayout stepListContainer;
+    List<Step> stepList = new ArrayList<>();
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri imageUri;
+
+    private ActivityResultLauncher<Intent> pickImageLauncher;
+    private ImageView recipeImageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,18 +53,57 @@ public class CreateRecipeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_create_recipe, container, false);
 
+        kitchenDB = new KitchenDB(getContext());
+
         Button createRecipeButton = view.findViewById(R.id.create_recipe_button);
         createRecipeButton.setOnClickListener(v -> {
             createRecipe(view);
+            SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+            List<Recipe> recipes = viewModel.getRecipeList();
+            Recipe newRecipe = recipes.get(recipes.size() - 1); // get the last-added one
+
+            // Insert into the database
+            kitchenDB.insertRecipe(newRecipe);
         });
 
-        // Inflate the layout for this fragment
+        ingredientListContainer = view.findViewById(R.id.create_recipe_ingredient_list_container);
+        utensilListContainer = view.findViewById(R.id.create_recipe_utensil_list_container);
+        stepListContainer = view.findViewById(R.id.create_recipe_step_list_container);
+
+        Button addIngredientButton = view.findViewById(R.id.create_recipe_button_ingredient);
+        addIngredientButton.setOnClickListener(v -> showAddIngredientDialog());
+
+        Button addUtensilButton = view.findViewById(R.id.create_recipe_button_utensil);
+        addUtensilButton.setOnClickListener(v -> showAddUtensilDialog());
+
+        Button addStepButton = view.findViewById(R.id.create_recipe_button_step);
+        addStepButton.setOnClickListener(v -> showAddStepDialog());
+
+
+        recipeImageView = view.findViewById(R.id.create_recipe_image); // Replace with your ImageView ID
+
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        imageUri = result.getData().getData();
+                        recipeImageView.setImageURI(imageUri); // Display selected image
+                    }
+                }
+        );
+
+        recipeImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            pickImageLauncher.launch(intent);
+        });
+
+
         return view;
     }
 
     public void createRecipe(View view) {
 
-        // Get the input data
         EditText edit_text_title = view.findViewById(R.id.create_recipe_title);
         String title = "New Recipe";
         if (!edit_text_title.getText().toString().trim().isEmpty()) {
@@ -93,7 +118,6 @@ public class CreateRecipeFragment extends Fragment {
         try {
             hours = Integer.parseInt(edit_text_hours.getText().toString().trim());
         } catch (NumberFormatException e) {
-            // Handle invalid input (e.g., show an error)
         }
 
         EditText edit_text_minutes = view.findViewById(R.id.create_recipe_minutes);
@@ -101,7 +125,6 @@ public class CreateRecipeFragment extends Fragment {
         try {
             minutes = Integer.parseInt(edit_text_minutes.getText().toString().trim());
         } catch (NumberFormatException e) {
-            // Handle invalid input
         }
 
         int time = hours * 60 + minutes;
@@ -111,7 +134,6 @@ public class CreateRecipeFragment extends Fragment {
         try {
             people = Integer.parseInt(edit_text_people.getText().toString().trim());
         } catch (NumberFormatException e) {
-            // Handle invalid input
         }
 
         EditText edit_text_source = view.findViewById(R.id.create_recipe_source);
@@ -120,11 +142,249 @@ public class CreateRecipeFragment extends Fragment {
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         List<Recipe> recipes = viewModel.getRecipeList();
 
-        Recipe new_recipe = new Recipe(title, desc, people, time, "$", null, R.drawable.recipe_default, null, null, false, null, null);
+        String imageUriString = imageUri != null ? imageUri.toString() : null;
+
+        Recipe new_recipe = new Recipe(title, desc, people, time, "$", imageUriString, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
 
         recipes.add(new_recipe);
 
-        // Show confirmation toast
+
         Toast.makeText(getContext(), "New Recipe Created!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showAddIngredientDialog() {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_ingredient, null);
+
+        EditText ingredientNameInput = dialogView.findViewById(R.id.ingredient_name_input);
+        EditText ingredientQuantityInput = dialogView.findViewById(R.id.ingredient_quantity_input);
+        Spinner ingredientUnitSpinner = dialogView.findViewById(R.id.ingredient_unit_spinner);
+
+        String[] units = {"gramme", "kg", "ml", "L", "Cup", "Tablespoon", "Spoon"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                units
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ingredientUnitSpinner.setAdapter(adapter);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Add Ingredient")
+                .setView(dialogView)
+                .setPositiveButton("Add", (dialog, which) -> {
+                    String name = ingredientNameInput.getText().toString().trim();
+                    String quantity = ingredientQuantityInput.getText().toString().trim();
+                    String quantityType = ingredientUnitSpinner.getSelectedItem().toString();
+
+                    if (!name.isEmpty() && !quantity.isEmpty() && !quantityType.isEmpty()) {
+
+                        LinearLayout ingredientEntryLayout = new LinearLayout(requireContext());
+                        ingredientEntryLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        ingredientEntryLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        ingredientEntryLayout.setPadding(0, 8, 0, 8);
+
+
+                        ingredientEntryLayout.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.custom_input));
+
+
+                        TextView ingredientView = new TextView(requireContext());
+                        ingredientView.setText(quantity + " " + quantityType + " of " + name);
+                        ingredientView.setTextSize(14);
+                        ingredientView.setLayoutParams(new LinearLayout.LayoutParams(
+                                0,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                1.0f // Weight to take up available space
+                        ));
+                        ingredientView.setPadding(16, 8, 8, 8);
+
+
+                        Button deleteButton = new Button(requireContext());
+                        deleteButton.setText("X");
+                        deleteButton.setTextSize(12);
+
+                        int widthInDp = 48;
+                        float scale = requireContext().getResources().getDisplayMetrics().density;
+                        int widthInPx = (int) (widthInDp * scale + 0.5f);
+                        deleteButton.setLayoutParams(new LinearLayout.LayoutParams(
+                                widthInPx,
+                                widthInPx
+                        ));
+
+
+                        deleteButton.setOnClickListener(v -> ingredientListContainer.removeView(ingredientEntryLayout));
+
+                        ingredientEntryLayout.addView(ingredientView);
+                        ingredientEntryLayout.addView(deleteButton);
+
+                        ingredientListContainer.addView(ingredientEntryLayout);
+
+                        ingredientList.add(new Ingredient(name, Integer.parseInt(quantity), quantityType));
+
+                        Toast.makeText(getContext(), "Added: " + name + " - " + quantity, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Please fill in both fields", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    private void showAddUtensilDialog() {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_utensil, null);
+
+        EditText utensilNameInput = dialogView.findViewById(R.id.utensil_name_input);
+        EditText utensilQuantityInput = dialogView.findViewById(R.id.utensil_quantity_input);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Add Utensil")
+                .setView(dialogView)
+                .setPositiveButton("Add", (dialog, which) -> {
+                    String name = utensilNameInput.getText().toString().trim();
+                    String quantity = utensilQuantityInput.getText().toString().trim();
+
+                    if (!name.isEmpty() && !quantity.isEmpty()) {
+
+                        LinearLayout utensilEntryLayout = new LinearLayout(requireContext());
+                        utensilEntryLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        utensilEntryLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        utensilEntryLayout.setPadding(0, 8, 0, 8);
+
+
+                        utensilEntryLayout.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.custom_input));
+
+
+                        TextView utensilView = new TextView(requireContext());
+                        utensilView.setText(quantity + " " + name);
+                        utensilView.setTextSize(14);
+                        utensilView.setLayoutParams(new LinearLayout.LayoutParams(
+                                0,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                1.0f // Weight to take up available space
+                        ));
+                        utensilView.setPadding(16, 8, 8, 8);
+
+
+                        Button deleteButton = new Button(requireContext());
+                        deleteButton.setText("X");
+                        deleteButton.setTextSize(12);
+
+                        int widthInDp = 48;
+                        float scale = requireContext().getResources().getDisplayMetrics().density;
+                        int widthInPx = (int) (widthInDp * scale + 0.5f);
+                        deleteButton.setLayoutParams(new LinearLayout.LayoutParams(
+                                widthInPx,
+                                widthInPx
+                        ));
+
+
+                        deleteButton.setOnClickListener(v -> utensilListContainer.removeView(utensilEntryLayout));
+
+                        utensilEntryLayout.addView(utensilView);
+                        utensilEntryLayout.addView(deleteButton);
+
+                        utensilListContainer.addView(utensilEntryLayout);
+
+                        utensilList.add(new Utensil(name, Integer.parseInt(quantity)));
+
+                        Toast.makeText(getContext(), "Added: " + name + " - " + quantity, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Please fill in both fields", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    private void showAddStepDialog() {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_step, null);
+
+        EditText stepNameInput = dialogView.findViewById(R.id.step_title_input);
+        EditText stepDescriptionInput = dialogView.findViewById(R.id.step_description_input);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Add step")
+                .setView(dialogView)
+                .setPositiveButton("Add", (dialog, which) -> {
+                    String title = stepNameInput.getText().toString().trim();
+                    String description = stepDescriptionInput.getText().toString().trim();
+
+                    if (!title.isEmpty() && !description.isEmpty()) {
+
+                        // Layout vertical pour l'étape entière
+                        LinearLayout stepEntryLayout = new LinearLayout(requireContext());
+                        stepEntryLayout.setOrientation(LinearLayout.VERTICAL);
+                        stepEntryLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        stepEntryLayout.setPadding(16, 16, 16, 16);
+                        stepEntryLayout.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.custom_input));
+
+                        // Layout horizontal pour le titre + bouton supprimer
+                        LinearLayout titleRowLayout = new LinearLayout(requireContext());
+                        titleRowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        titleRowLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+
+                        // Titre
+                        TextView stepTitleView = new TextView(requireContext());
+                        stepTitleView.setText(title);
+                        stepTitleView.setTextSize(18);
+                        stepTitleView.setLayoutParams(new LinearLayout.LayoutParams(
+                                0,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                1.0f // prend l'espace disponible
+                        ));
+                        stepTitleView.setPadding(0, 0, 8, 0);
+
+                        // Bouton supprimer
+                        Button deleteButton = new Button(requireContext());
+                        deleteButton.setText("X");
+                        deleteButton.setContentDescription("Delete step");
+                        deleteButton.setTextSize(12);
+                        int widthInDp = 48;
+                        float scale = requireContext().getResources().getDisplayMetrics().density;
+                        int widthInPx = (int) (widthInDp * scale + 0.5f);
+                        deleteButton.setLayoutParams(new LinearLayout.LayoutParams(widthInPx, widthInPx));
+                        deleteButton.setOnClickListener(v -> stepListContainer.removeView(stepEntryLayout));
+
+                        // Ajouter titre + bouton à la ligne
+                        titleRowLayout.addView(stepTitleView);
+                        titleRowLayout.addView(deleteButton);
+
+                        // Description en dessous
+                        TextView stepDescriptionView = new TextView(requireContext());
+                        stepDescriptionView.setText(description);
+                        stepDescriptionView.setTextSize(14);
+                        stepDescriptionView.setPadding(0, 8, 0, 0);
+
+                        // Ajouter tout au layout principal
+                        stepEntryLayout.addView(titleRowLayout);
+                        stepEntryLayout.addView(stepDescriptionView);
+
+                        // Ajouter au conteneur
+                        stepListContainer.addView(stepEntryLayout);
+
+                        // Ajouter à la liste des étapes
+                        Step newStep = new Step(title, description);
+                        stepList.add(newStep);
+
+                        Toast.makeText(getContext(), "Added: " + title, Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Please fill in both fields", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

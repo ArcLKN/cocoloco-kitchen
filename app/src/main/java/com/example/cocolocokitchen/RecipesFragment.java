@@ -3,6 +3,7 @@ package com.example.cocolocokitchen;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,11 +30,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipesFragment extends Fragment {
+public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener {
 
     private RecipeAdapter recipeAdapter;
 
@@ -46,6 +49,7 @@ public class RecipesFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_recipes, container, false);
 
+        //Assigner toolbar en haut
         Toolbar toolbar = view.findViewById(R.id.recipes_toolbar);
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
         activity.setSupportActionBar(toolbar);
@@ -55,6 +59,30 @@ public class RecipesFragment extends Fragment {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.recipes_menu, menu);
+
+                MenuItem searchItem = menu.findItem(R.id.recipes_action_search);
+                if (searchItem != null) {
+                    SearchView searchView = (SearchView) searchItem.getActionView();
+                    if (searchView != null) {
+                        searchView.setQueryHint("Search recipes...");
+                        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onQueryTextChange(String newText) {
+                                recipeAdapter.filter(newText);
+                                return true;
+                            }
+                        });
+                    } else {
+                        Log.e("RecipesFragment", "SearchView is null. Check if the menu item uses actionViewClass or app:actionViewClass.");
+                    }
+                } else {
+                    Log.e("RecipesFragment", "MenuItem recipes_action_search not found.");
+                }
             }
 
             @Override
@@ -83,18 +111,35 @@ public class RecipesFragment extends Fragment {
             dialog.show();
         });
 
+        //Get recycler view
         RecyclerView recyclerView = view.findViewById(R.id.recipes_recycler_view);
+
 
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         List<Recipe> recipes = viewModel.getRecipeList();
 
         recipeAdapter = new RecipeAdapter(requireContext(), recipes);
+        recipeAdapter.setOnRecipeClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(recipeAdapter);
+
+        FloatingActionButton createRecipeFloatingButton = view.findViewById(R.id.recipe_floatingActionButton);
+        createRecipeFloatingButton.setOnClickListener(v -> {
+            Fragment createRecipeFragment = new CreateRecipeFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, createRecipeFragment) // Use your container ID here
+                    .addToBackStack(null) // Optional: enables back navigation
+                    .commit();
+        });
 
         //Toast.makeText(getContext(), "Recipe list loaded", Toast.LENGTH_SHORT).show();
 
         return view;
     }
 
+    @Override
+    public void onRecipeClick(Recipe recipe) {
+
+    }
 }

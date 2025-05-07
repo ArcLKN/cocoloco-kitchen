@@ -12,13 +12,16 @@ public class Recipe {
     private int imageResId;  // Drawable resource ID (optional, use if needed)
     private List<Ingredient> ingredientList;
     private List<Utensil> utensilList;
+    private List<Step> stepList;
     private boolean isFavorite;
     private List<String> tags;
     private String group;
+    private String source;
 
     public Recipe(String title, String description, int numberOfServing, int timeInMinute,
                   String costDegree, String imageUrl, int imageResId, List<Ingredient> ingredientList,
-                  List<Utensil> utensilList, boolean isFavorite, List<String> tags, String group) {
+                  List<Utensil> utensilList, List<Step> stepList, boolean isFavorite,
+                  List<String> tags, String group, String source) {
         this . title = title;
         this . description = description;
         this . numberOfServing = numberOfServing;
@@ -28,9 +31,11 @@ public class Recipe {
         this . imageResId = imageResId;
         this . ingredientList = ingredientList;
         this . utensilList = utensilList;
+        this . stepList = stepList;
         this . isFavorite = isFavorite;
         this . tags = tags;
         this . group = group;
+        this . source = source;
     }
 
     public String getTitle() {
@@ -56,6 +61,7 @@ public class Recipe {
     public String getImageUrl() {
         return imageUrl;
     }
+    public List<Step> getSteps() {return stepList;}
 
     // Getter for imageResId
     public int getImageResId() {
@@ -69,6 +75,9 @@ public class Recipe {
     public List<Utensil> getUtensilList() {
         return utensilList;
     }
+    public List<Step> getStepList() {
+        return stepList;
+    }
 
     public boolean isFavorite() {
         return isFavorite;
@@ -80,6 +89,9 @@ public class Recipe {
 
     public String getGroup() {
         return group;
+    }
+    public String getSource() {
+        return source;
     }
 
 

@@ -13,7 +13,7 @@
         android:id="@+id/recipes_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/white"
+        android:background="#9AD7B2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
 
@@ -72,14 +72,22 @@
         android:padding="@dimen/simple_margin"
         />
 
+    <ImageView
+        android:id="@+id/walker_image"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/miam"
+        app:layout_constraintTop_toBottomOf="@+id/recipes_recycler_view" />
+
     <View
         android:id="@+id/clear_space"
         android:layout_width="match_parent"
-        android:layout_height="96dp"
+        android:layout_height="138dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/recipe_floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -89,6 +97,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.834"
-        app:srcCompat="@drawable/icon_like" />
+        app:srcCompat="@drawable/baseline_add_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

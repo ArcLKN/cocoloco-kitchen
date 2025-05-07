@@ -13,6 +13,9 @@ public class KitchenDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "kitchen.db";
     private static final int DATABASE_VERSION = 1;
 
+
+
+
     //Initialize the recipes table
     public static final String RECIPE_TABLE_NAME = "recipes";
     public static final String RECIPE_COLUMN_ID = "id_recipe";
@@ -76,6 +79,14 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String PLANNING_COLUMN_WEEK_TEMPLATE_ID = "week_template_id";
     public static final String PLANNING_COLUMN_TIME = "time_of_day";
 
+    //Initialize grocery table
+    public static final String GROCERY_TABLE_NAME = "groceries";
+    public static final String GROCERY_COLUMN_ID = "id_grocery";
+    public static final String GROCERY_COLUMN_NAME = "name";
+    public static final String GROCERY_COLUMN_QUANTITY = "quantity";
+    public static final String GROCERY_COLUMN_UNIT = "unit";
+    public static final String GROCERY_COLUMN_CHECKED = "checked"; // 0 = not bought, 1 = bought
+
     //Initialize junction tables
     public static final String RECIPE_INGREDIENT_NAME = "Recipe_Ingredient";
     public static final String RECIPE_INGREDIENT_QUANTITY = "quantity";
@@ -86,6 +97,9 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String RECIPE_TAG_NAME = "Recipe_Tag";
 
     public static final String RECIPE_GROUP_NAME = "Recipe_Group";
+
+
+
 
     public static final String WEEK_TEMPLATE_TABLE_NAME = "week_templates";
     public static final String WEEK_TEMPLATE_COLUMN_ID = "id_week_template";
@@ -182,6 +196,15 @@ public class KitchenDB extends SQLiteOpenHelper {
                     "FOREIGN KEY (" + RECIPE_COLUMN_ID + ") REFERENCES " + RECIPE_TABLE_NAME + "(" + RECIPE_COLUMN_ID + ")" +
                     ");";
 
+    public static final String GROCERY_TABLE_CREATE =
+            "CREATE TABLE " + GROCERY_TABLE_NAME + " (" +
+                    GROCERY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    GROCERY_COLUMN_NAME + " TEXT, " +
+                    GROCERY_COLUMN_QUANTITY + " REAL, " +
+                    GROCERY_COLUMN_UNIT + " TEXT, " +
+                    GROCERY_COLUMN_CHECKED + " INTEGER DEFAULT 0" +
+                    ");";
+
     //Junction tables
     public static final String RECIPE_INGREDIENT_TABLE =
             "CREATE TABLE " + RECIPE_INGREDIENT_NAME + " (" +
@@ -238,18 +261,47 @@ public class KitchenDB extends SQLiteOpenHelper {
                     "FOREIGN KEY (" + RECIPE_COLUMN_ID + ") REFERENCES " + RECIPE_TABLE_NAME + "(" + RECIPE_COLUMN_ID + ")" +
                     ");";
 
+
+
+
     //Constructor
     public KitchenDB ( Context context ) {
         super ( context , DATABASE_NAME , null , DATABASE_VERSION );
     }
 
-    public KitchenDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(RECIPE_TABLE_CREATE);
+
+        // Insert initial dummy recipe(s)
+        sqLiteDatabase.execSQL("INSERT INTO " + RECIPE_TABLE_NAME + " (" +
+                RECIPE_COLUMN_NAME + ", " +
+                RECIPE_COLUMN_DESCRIPTION + ", " +
+                RECIPE_COLUMN_SERVINGS + ", " +
+                RECIPE_COLUMN_PREP_TIME + ", " +
+                RECIPE_COLUMN_PRICE_LEVEL + ", " +
+                RECIPE_COLUMN_SOURCE + ") VALUES (" +
+                "'Cinnamon Rolls'," +
+                "'Delicious cinnamon rolls with icing.'," +
+                "4," +
+                "30," +
+                "'$$'," +
+                "'Grandma’s Kitchen');");
+
+        sqLiteDatabase.execSQL("INSERT INTO " + RECIPE_TABLE_NAME + " (" +
+                RECIPE_COLUMN_NAME + ", " +
+                RECIPE_COLUMN_DESCRIPTION + ", " +
+                RECIPE_COLUMN_SERVINGS + ", " +
+                RECIPE_COLUMN_PREP_TIME + ", " +
+                RECIPE_COLUMN_PRICE_LEVEL + ", " +
+                RECIPE_COLUMN_SOURCE + ") VALUES (" +
+                "'Avocado Toast'," +
+                "'Crunchy toast with smashed avocado and toppings.'," +
+                "2," +
+                "10," +
+                "'$'," +
+                "'Instagram');");
+
         sqLiteDatabase.execSQL(STEP_TABLE_CREATE);
         sqLiteDatabase.execSQL(INGREDIENT_TABLE_CREATE);
         sqLiteDatabase.execSQL(UTENSIL_TABLE_CREATE);
@@ -259,6 +311,7 @@ public class KitchenDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(IMAGE_TABLE_CREATE);
         sqLiteDatabase.execSQL(FAV_TABLE_CREATE);
         sqLiteDatabase.execSQL(PLANNING_TABLE_CREATE);
+        sqLiteDatabase.execSQL(GROCERY_TABLE_CREATE);
         sqLiteDatabase.execSQL(RECIPE_INGREDIENT_TABLE);
         sqLiteDatabase.execSQL(RECIPE_UTENSIL_TABLE);
         sqLiteDatabase.execSQL(RECIPE_TAG_TABLE);
@@ -288,6 +341,117 @@ public class KitchenDB extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WEEK_TEMPLATE_TABLE_NAME);
 
         onCreate(sqLiteDatabase);
+    }
+
+
+
+
+    public Cursor getAllRecipes() {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        return sqLiteDatabase.rawQuery("SELECT * FROM " + RECIPE_TABLE_NAME, null);
+    }
+
+    private long getOrInsertIngredientId(SQLiteDatabase sqLiteDatabase, Ingredient ingredient) {
+        Cursor cursor = sqLiteDatabase.query(
+                INGREDIENT_TABLE_NAME,
+                new String[]{INGREDIENT_COLUMN_ID},
+                INGREDIENT_COLUMN_NAME + " = ? AND " + INGREDIENT_COLUMN_UNIT + " = ?",
+                new String[]{ingredient.getName(), String.valueOf(ingredient.getQuantity())},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            long id = cursor.getLong(0);
+            cursor.close();
+            return id;
+        } else {
+            cursor.close();
+            ContentValues values = new ContentValues();
+            values.put(INGREDIENT_COLUMN_NAME, ingredient.getName());
+            values.put(INGREDIENT_COLUMN_UNIT, ingredient.getQuantityType());
+            return sqLiteDatabase.insert(INGREDIENT_TABLE_NAME, null, values);
+        }
+    }
+
+    private long getOrInsertUtensilId(SQLiteDatabase db, String name) {
+        Cursor cursor = db.query(
+                UTENSIL_TABLE_NAME,
+                new String[]{UTENSIL_COLUMN_ID},
+                UTENSIL_COLUMN_NAME + " = ?",
+                new String[]{name},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            long id = cursor.getLong(0);
+            cursor.close();
+            return id;
+        } else {
+            cursor.close();
+            ContentValues values = new ContentValues();
+            values.put(UTENSIL_COLUMN_NAME, name);
+            return db.insert(UTENSIL_TABLE_NAME, null, values);
+        }
+    }
+
+    public void insertIngredient(SQLiteDatabase db, Ingredient ingredient, long recipeId) {
+        ContentValues values = new ContentValues();
+        values.put("recipe_id", recipeId);
+        values.put("name", ingredient.getName());
+        values.put("quantity", ingredient.getQuantity());
+        db.insert("ingredients", null, values);
+    }
+
+    public void insertRecipe(Recipe recipe) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues recipeValues = new ContentValues();
+            recipeValues.put(RECIPE_COLUMN_NAME, recipe.getTitle());
+            recipeValues.put(RECIPE_COLUMN_DESCRIPTION, recipe.getDescription());
+            recipeValues.put(RECIPE_COLUMN_SERVINGS, recipe.getNumberOfServing());
+            recipeValues.put(RECIPE_COLUMN_PREP_TIME, recipe.getTimeInMinute());
+            recipeValues.put(RECIPE_COLUMN_PRICE_LEVEL, recipe.getCostDegree());
+//            recipeValues.put(RECIPE_COLUMN_SOURCE, recipe.getSource());
+
+            long recipeId = db.insert(RECIPE_TABLE_NAME, null, recipeValues);
+
+            // Insert ingredients and link in junction table
+            for (Ingredient ingredient : recipe.getIngredientList()) {
+                long ingId = getOrInsertIngredientId(db, ingredient);
+                ContentValues linkValues = new ContentValues();
+                linkValues.put(RECIPE_COLUMN_ID, recipeId);
+                linkValues.put(INGREDIENT_COLUMN_ID, ingId);
+                linkValues.put(RECIPE_INGREDIENT_QUANTITY, ingredient.getQuantityType());
+                db.insert(RECIPE_INGREDIENT_NAME, null, linkValues);
+            }
+
+            // Insert utensils and link in junction table
+            for (Utensil utensil : recipe.getUtensilList()) {
+                long utId = getOrInsertUtensilId(db, utensil.getName());
+                ContentValues linkValues = new ContentValues();
+                linkValues.put(RECIPE_COLUMN_ID, recipeId);
+                linkValues.put(UTENSIL_COLUMN_ID, utId);
+                linkValues.put(RECIPE_UTENSIL_QUANTITY, utensil.getQuantity());
+                db.insert(RECIPE_UTENSIL_NAME, null, linkValues);
+            }
+
+            // Insert steps
+            int stepNumber = 1;
+            for (Step step : recipe.getSteps()) {
+                ContentValues stepValues = new ContentValues();
+                stepValues.put(STEP_COLUMN_TITLE, step.getName());
+                stepValues.put(STEP_COLUMN_DESCRIPTION, step.getDescription());
+                stepValues.put(STEP_COLUMN_NUMBER, stepNumber++);
+                stepValues.put(RECIPE_COLUMN_ID, recipeId);
+                db.insert(STEP_TABLE_NAME, null, stepValues);
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
     }
     // Méthode pour appliquer une semaine type au planning
     public void applyWeekTemplateToCalendar(long weekTemplateId, String startDate) {
@@ -368,4 +532,3 @@ public class KitchenDB extends SQLiteOpenHelper {
     }
 
 }
-

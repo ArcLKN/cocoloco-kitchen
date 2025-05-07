@@ -1,29 +1,41 @@
 package com.example.cocolocokitchen;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private Context context;
     private List<Recipe> recipeList;
+    private List<Recipe> fullRecipeList;
 
     private int currentViewType = -1;
+    private OnRecipeClickListener listener;
 
+
+    public interface OnRecipeClickListener {
+        void onRecipeClick(Recipe recipe);
+    }
     public RecipeAdapter(Context context, List<Recipe> recipeList) {
         this.context = context;
         this.recipeList = recipeList;
+        this.fullRecipeList = new ArrayList<>(recipeList);   // full original copy
     }
 
     @NonNull
@@ -50,7 +62,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         if (holder.descriptionTextView != null) {
             holder.descriptionTextView.setText(recipe.getDescription());
         }
-        holder.timeView.setText(String.valueOf(recipe.getTimeInMinute()) + " min");
+        holder.timeView.setText(recipe.getTimeInMinute() + " min");
         holder.priceView.setText(recipe.getCostDegree());
         holder.peopleView.setText(String.valueOf(recipe.getNumberOfServing()));
 
@@ -69,11 +81,44 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                     .load(imageResId) // Load from drawable resource ID
                     .into(holder.imageView);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            Log.d("RecipeAdapter", "Item clicked: " + recipe.getTitle());
+
+            if (listener != null) {
+                int positionClicked = holder.getAdapterPosition(); // safer than external index
+                Bundle bundle = new Bundle();
+                bundle.putInt("recipeIndex", positionClicked);
+
+                RecipeViewFragment fragment = new RecipeViewFragment();
+                fragment.setArguments(bundle);
+
+                ((FragmentActivity) context)
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+
+                listener.onRecipeClick(recipe); // optional: for analytics, etc.
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return recipeList.size();
+    }
+
+    public void filter(String query) {
+        List<Recipe> filteredList = new ArrayList<>();
+        for (Recipe recipe : fullRecipeList) {
+            if (recipe.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(recipe);
+            }
+        }
+        recipeList = filteredList;
+        notifyDataSetChanged();
     }
 
     // We call this function to change the variable currentViewType to globally change
@@ -112,5 +157,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             priceView = itemView.findViewById(R.id.recipe_price);
             peopleView = itemView.findViewById(R.id.recipe_people);
         }
+    }
+    public void setOnRecipeClickListener(OnRecipeClickListener listener) {
+        this.listener = listener;
     }
 }
