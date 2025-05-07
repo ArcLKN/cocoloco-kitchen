@@ -259,7 +259,7 @@
                         android:layout_height="48dp"
                         android:background="@drawable/custom_input"
                         android:gravity="center_vertical"
-                        android:hint="Hours"
+                        android:hint="Pers."
                         android:inputType="text"
                         android:padding="@dimen/simple_margin" />
 
