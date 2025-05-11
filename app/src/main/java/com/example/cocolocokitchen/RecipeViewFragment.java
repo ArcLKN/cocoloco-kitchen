@@ -90,7 +90,7 @@ public class RecipeViewFragment extends Fragment {
                 timeText.setText(""+ recipe.getTimeInMinute() + " min");
 
                 TextView groupText = view.findViewById(R.id.recipe_group);
-                groupText.setText("" + recipe.getGroup());
+                groupText.setText("" + recipe.getNumberOfServing());
 
                 TextView costText = view.findViewById(R.id.recipe_cost);
                 costText.setText(recipe.getCostDegree());

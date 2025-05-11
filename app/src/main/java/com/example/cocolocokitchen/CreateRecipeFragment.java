@@ -58,12 +58,6 @@ public class CreateRecipeFragment extends Fragment {
         Button createRecipeButton = view.findViewById(R.id.create_recipe_button);
         createRecipeButton.setOnClickListener(v -> {
             createRecipe(view);
-            SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-            List<Recipe> recipes = viewModel.getRecipeList();
-            Recipe newRecipe = recipes.get(recipes.size() - 1); // get the last-added one
-
-            // Insert into the database
-            kitchenDB.insertRecipe(newRecipe);
         });
 
         ingredientListContainer = view.findViewById(R.id.create_recipe_ingredient_list_container);
@@ -147,6 +141,7 @@ public class CreateRecipeFragment extends Fragment {
         Recipe new_recipe = new Recipe(title, desc, people, time, "$", imageUriString, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
 
         recipes.add(new_recipe);
+        kitchenDB.insertRecipe(new_recipe);
 
 
         Toast.makeText(getContext(), "New Recipe Created!", Toast.LENGTH_SHORT).show();

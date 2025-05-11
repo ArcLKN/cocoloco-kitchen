@@ -35,6 +35,8 @@ public class SharedViewModel extends AndroidViewModel {
                     int prepTime = cursor.getInt(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_PREP_TIME));
                     String price = cursor.getString(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_PRICE_LEVEL));
                     String source = cursor.getString(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_SOURCE));
+                    // Log.d("SharedViewModel", "Serving value: " + servings);
+
 
                     Recipe recipe = new Recipe(
                             name,
