@@ -25,7 +25,6 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String RECIPE_COLUMN_PRICE_LEVEL = "price_level";
     public static final String RECIPE_COLUMN_SERVINGS = "servings";
     public static final String RECIPE_COLUMN_SOURCE = "source";
-
     //Initialize the steps table
     public static final String STEP_TABLE_NAME = "steps";
     public static final String STEP_COLUMN_ID = "id_step";
@@ -412,7 +411,6 @@ public class KitchenDB extends SQLiteOpenHelper {
             recipeValues.put(RECIPE_COLUMN_SERVINGS, recipe.getNumberOfServing());
             recipeValues.put(RECIPE_COLUMN_PREP_TIME, recipe.getTimeInMinute());
             recipeValues.put(RECIPE_COLUMN_PRICE_LEVEL, recipe.getCostDegree());
-//            recipeValues.put(RECIPE_COLUMN_SOURCE, recipe.getSource());
 
             long recipeId = db.insert(RECIPE_TABLE_NAME, null, recipeValues);
 
@@ -446,6 +444,13 @@ public class KitchenDB extends SQLiteOpenHelper {
                 stepValues.put(RECIPE_COLUMN_ID, recipeId);
                 db.insert(STEP_TABLE_NAME, null, stepValues);
             }
+
+            // Insert image
+            ContentValues imageValues = new ContentValues();
+            imageValues.put(IMAGE_COLUMN_ID, recipeId);
+            imageValues.put(IMAGE_COLUMN_LOP, recipe.getImageUrl());
+            imageValues.put(IMAGE_COLUMN_DISPLAY, "1");
+            db.insert(IMAGE_TABLE_NAME, null, imageValues);
 
             db.setTransactionSuccessful();
         } finally {
