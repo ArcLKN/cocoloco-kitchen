@@ -15,15 +15,19 @@
         android:padding="@dimen/simple_margin" />
 
     <LinearLayout
+        android:layout_marginTop="@dimen/simple_margin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
         <EditText
-            android:layout_marginTop="@dimen/simple_margin"
             android:id="@+id/ingredient_quantity_input"
             android:hint="Quantity"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:inputType="number"
+            android:inputType="text"
+            android:text="1"
+            android:textAlignment="textEnd"
             android:layout_height="36dp"
             android:background="@drawable/custom_input"
             android:padding="@dimen/simple_margin" />

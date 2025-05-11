@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CreateRecipeFragment extends Fragment {
@@ -155,14 +156,32 @@ public class CreateRecipeFragment extends Fragment {
         EditText ingredientQuantityInput = dialogView.findViewById(R.id.ingredient_quantity_input);
         Spinner ingredientUnitSpinner = dialogView.findViewById(R.id.ingredient_unit_spinner);
 
-        String[] units = {"gramme", "kg", "ml", "L", "Cup", "Tablespoon", "Spoon"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                units
+        List<UnitItem> unitItems = Arrays.asList(
+                new UnitItem("Common", true),
+                new UnitItem("Quantity", false),
+                new UnitItem("Pinch", false),
+                new UnitItem("Drop", false),
+                new UnitItem("Teaspoon", false),
+                new UnitItem("Tablespoon", false),
+                new UnitItem("Cup", false),
+
+                new UnitItem("Weight", true),
+                new UnitItem("Gramme", false),
+                new UnitItem("kg", false),
+
+                new UnitItem("Volume", true),
+                new UnitItem("ml", false),
+                new UnitItem("cl", false),
+                new UnitItem("L", false),
+
+                new UnitItem("Other", true),
+                new UnitItem("Slice", false)
+                // Add more here if needed
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(requireContext(), unitItems);
         ingredientUnitSpinner.setAdapter(adapter);
+
 
         new AlertDialog.Builder(requireContext())
                 .setTitle("Add Ingredient")
@@ -170,7 +189,11 @@ public class CreateRecipeFragment extends Fragment {
                 .setPositiveButton("Add", (dialog, which) -> {
                     String name = ingredientNameInput.getText().toString().trim();
                     String quantity = ingredientQuantityInput.getText().toString().trim();
-                    String quantityType = ingredientUnitSpinner.getSelectedItem().toString();
+                    UnitItem selectedItem = (UnitItem) ingredientUnitSpinner.getSelectedItem();
+                    String quantityType = "Quantity";
+                    if (selectedItem != null && !selectedItem.isHeader) {
+                        quantityType = selectedItem.name;
+                    }
 
                     if (!name.isEmpty() && !quantity.isEmpty() && !quantityType.isEmpty()) {
 
@@ -217,7 +240,7 @@ public class CreateRecipeFragment extends Fragment {
 
                         ingredientListContainer.addView(ingredientEntryLayout);
 
-                        ingredientList.add(new Ingredient(name, Integer.parseInt(quantity), quantityType));
+                        ingredientList.add(new Ingredient(name, quantity, quantityType));
 
                         Toast.makeText(getContext(), "Added: " + name + " - " + quantity, Toast.LENGTH_SHORT).show();
                     } else {

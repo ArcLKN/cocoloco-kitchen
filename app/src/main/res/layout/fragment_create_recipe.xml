@@ -120,8 +120,8 @@
                             android:layout_width="64dp"
                             android:layout_height="48dp"
                             android:background="@drawable/custom_input"
-                            android:gravity="center_vertical"
                             android:hint="Hours"
+                            android:textAlignment="textEnd"
                             android:inputType="text"
                             android:padding="@dimen/simple_margin" />
 
@@ -138,7 +138,7 @@
                             android:layout_width="64dp"
                             android:layout_height="48dp"
                             android:background="@drawable/custom_input"
-                            android:gravity="center_vertical"
+                            android:textAlignment="textEnd"
                             android:hint="Minutes"
                             android:inputType="text"
                             android:padding="@dimen/simple_margin" />

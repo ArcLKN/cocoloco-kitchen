@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Ingredient {
     private String title;
-    private int number;
+    private String number;
     private String numberType;
 
-    public Ingredient(String title, int number, String numberType) {
+    public Ingredient(String title, String number, String numberType) {
         this . title = title;
         this . number = number;
         this . numberType = numberType;
@@ -16,7 +16,7 @@ public class Ingredient {
     public String getName() {
         return title;
     }
-    public int getQuantity() {
+    public String getQuantity() {
         return number;
     }
     public String getQuantityType() {
