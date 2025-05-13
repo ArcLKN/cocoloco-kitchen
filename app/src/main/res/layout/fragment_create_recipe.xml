@@ -64,7 +64,7 @@
                 android:layout_height="48dp"
                 android:background="@drawable/custom_input"
                 android:gravity="center_vertical"
-                android:hint="Recipe Description"
+                android:hint="Recipe Title"
                 android:inputType="text"
                 android:padding="@dimen/simple_margin" />
 
@@ -84,7 +84,7 @@
                 android:layout_marginVertical="@dimen/simple_margin"
                 android:background="@drawable/custom_input"
                 android:gravity="top"
-                android:hint="Recipe Title"
+                android:hint="Recipe Description"
                 android:inputType="textMultiLine"
                 android:padding="@dimen/simple_margin" />
 
