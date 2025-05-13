@@ -40,6 +40,8 @@ public class SharedViewModel extends AndroidViewModel {
                     // Log.d("SharedViewModel", "Serving value: " + servings);
 
                     List<Ingredient> ingredients = kitchenDB.getIngredientsForRecipe(recipeId);
+                    List<Utensil> utensils = kitchenDB.getUtensilsForRecipe(recipeId);
+                    List<Step> steps = kitchenDB.getStepsForRecipe(recipeId);
                     //List<String> imagePaths = kitchenDB.getImagePathsForRecipe(recipeId);
 
 
@@ -52,8 +54,8 @@ public class SharedViewModel extends AndroidViewModel {
                             image_uri,
                             R.drawable.recipe_default, // Temporary image
                             ingredients,
-                            null,
-                            null,
+                            utensils,
+                            steps,
                             false,
                             null,
                             null,

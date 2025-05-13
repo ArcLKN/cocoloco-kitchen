@@ -29,6 +29,7 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String RECIPE_COLUMN_SERVINGS = "servings";
     public static final String RECIPE_COLUMN_SOURCE = "source";
     public static final String RECIPE_COLUMN_IMAGE_URI = "image_uri";
+
     //Initialize the steps table
     public static final String STEP_TABLE_NAME = "steps";
     public static final String STEP_COLUMN_ID = "id_step";
@@ -379,6 +380,55 @@ public class KitchenDB extends SQLiteOpenHelper {
         }
 
         return ingredients;
+    }
+    public List<Utensil> getUtensilsForRecipe(int utensilId) {
+        List<Utensil> utensils = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT i." + UTENSIL_COLUMN_NAME + ", ri." + RECIPE_UTENSIL_QUANTITY +
+                " FROM " + RECIPE_UTENSIL_NAME + " ri " +
+                " JOIN " + UTENSIL_TABLE_NAME + " i ON ri." + UTENSIL_COLUMN_ID + " = i." + UTENSIL_COLUMN_ID +
+                " WHERE ri." + RECIPE_COLUMN_ID + " = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(utensilId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(0); // utensil name
+                String quantity = cursor.getString(1); // quantity from junction table
+                int quantity_int = Integer.parseInt(quantity);
+
+                utensils.add(new Utensil(name, quantity_int));
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return utensils;
+    }
+    public List<Step> getStepsForRecipe(int stepId) {
+        List<Step> steps = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT " + STEP_COLUMN_NUMBER + ", " + STEP_COLUMN_TITLE + ", " + STEP_COLUMN_DESCRIPTION +
+                " FROM " + STEP_TABLE_NAME +
+                " WHERE " + RECIPE_COLUMN_ID + " = ?" +
+                " ORDER BY " + STEP_COLUMN_NUMBER;
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(stepId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(1); // step title
+                String description = cursor.getString(2); // description
+
+                steps.add(new Step(name, description));
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return steps;
     }
 
     private long getOrInsertIngredientId(SQLiteDatabase sqLiteDatabase, Ingredient ingredient) {
