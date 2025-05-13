@@ -148,15 +148,15 @@ public class RecipeViewFragment extends Fragment {
                 } else {
                     int stepIndex = 1;
                     for (Step step : stepList) {
-                        TextView titleView = new TextView(requireContext());
-                        titleView.setText("Step " + stepIndex + ": " + step.getName());
-                        titleView.setTypeface(null, Typeface.BOLD);
+                        View cardView = inflater.inflate(R.layout.recipe_step_card, stepContainer, false);
 
-                        TextView descriptionView = new TextView(requireContext());
+                        TextView titleView = cardView.findViewById(R.id.stepTitle);
+                        TextView descriptionView = cardView.findViewById(R.id.stepDescription);
+
+                        titleView.setText("Step " + stepIndex + ": " + step.getName());
                         descriptionView.setText(step.getDescription());
 
-                        stepContainer.addView(titleView);
-                        stepContainer.addView(descriptionView);
+                        stepContainer.addView(cardView);
                         stepIndex++;
                     }
                 }
