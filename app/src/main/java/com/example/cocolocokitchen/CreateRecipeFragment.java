@@ -44,7 +44,7 @@ public class CreateRecipeFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
-
+    private String costDegreeValue;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private ImageView recipeImageView;
 
@@ -59,6 +59,19 @@ public class CreateRecipeFragment extends Fragment {
         Button createRecipeButton = view.findViewById(R.id.create_recipe_button);
         createRecipeButton.setOnClickListener(v -> {
             createRecipe(view);
+        });
+
+        Button priceLowButton = view.findViewById(R.id.create_recipe_price_low);
+        Button priceMediumButton = view.findViewById(R.id.create_recipe_price_medium);
+        Button priceHighButton = view.findViewById(R.id.create_recipe_price_high);
+        priceLowButton.setOnClickListener(v -> {
+            costDegreeValue = priceLowButton.getText().toString().trim();
+        });
+        priceMediumButton.setOnClickListener(v -> {
+            costDegreeValue = priceMediumButton.getText().toString().trim();
+        });
+        priceHighButton.setOnClickListener(v -> {
+            costDegreeValue = priceHighButton.getText().toString().trim();
         });
 
         ingredientListContainer = view.findViewById(R.id.create_recipe_ingredient_list_container);
@@ -139,7 +152,7 @@ public class CreateRecipeFragment extends Fragment {
 
         String imageUriString = imageUri != null ? imageUri.toString() : null;
 
-        Recipe new_recipe = new Recipe(title, desc, people, time, "$", imageUriString, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
+        Recipe new_recipe = new Recipe(title, desc, people, time, costDegreeValue, imageUriString, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
 
         recipes.add(new_recipe);
         kitchenDB.insertRecipe(new_recipe);

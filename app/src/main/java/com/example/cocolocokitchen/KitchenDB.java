@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KitchenDB extends SQLiteOpenHelper {
     //Create the database
     private static final String DATABASE_NAME = "kitchen.db";
@@ -25,6 +28,7 @@ public class KitchenDB extends SQLiteOpenHelper {
     public static final String RECIPE_COLUMN_PRICE_LEVEL = "price_level";
     public static final String RECIPE_COLUMN_SERVINGS = "servings";
     public static final String RECIPE_COLUMN_SOURCE = "source";
+    public static final String RECIPE_COLUMN_IMAGE_URI = "image_uri";
     //Initialize the steps table
     public static final String STEP_TABLE_NAME = "steps";
     public static final String STEP_COLUMN_ID = "id_step";
@@ -120,7 +124,8 @@ public class KitchenDB extends SQLiteOpenHelper {
                     RECIPE_COLUMN_SOURCE + " TEXT, " +
                     RECIPE_COLUMN_PREP_TIME + " INTEGER, " +
                     RECIPE_COLUMN_PRICE_LEVEL + " TEXT, " +
-                    RECIPE_COLUMN_SERVINGS + " INTEGER " +
+                    RECIPE_COLUMN_SERVINGS + " INTEGER, " +
+                    RECIPE_COLUMN_IMAGE_URI + " TEXT " +
                     ");";
 
     public static final String STEP_TABLE_CREATE =
@@ -349,6 +354,32 @@ public class KitchenDB extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         return sqLiteDatabase.rawQuery("SELECT * FROM " + RECIPE_TABLE_NAME, null);
     }
+    public List<Ingredient> getIngredientsForRecipe(int recipeId) {
+        List<Ingredient> ingredients = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT i." + INGREDIENT_COLUMN_NAME + ", i." + INGREDIENT_COLUMN_UNIT +
+                ", ri." + RECIPE_INGREDIENT_QUANTITY +
+                " FROM " + RECIPE_INGREDIENT_NAME + " ri " +
+                " JOIN " + INGREDIENT_TABLE_NAME + " i ON ri." + INGREDIENT_COLUMN_ID + " = i." + INGREDIENT_COLUMN_ID +
+                " WHERE ri." + RECIPE_COLUMN_ID + " = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(recipeId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(0); // ingredient name
+                String unit = cursor.getString(1); // ingredient unit
+                String quantity = cursor.getString(2); // quantity from junction table
+
+                ingredients.add(new Ingredient(name, unit, quantity));
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return ingredients;
+    }
 
     private long getOrInsertIngredientId(SQLiteDatabase sqLiteDatabase, Ingredient ingredient) {
         Cursor cursor = sqLiteDatabase.query(
@@ -411,6 +442,7 @@ public class KitchenDB extends SQLiteOpenHelper {
             recipeValues.put(RECIPE_COLUMN_SERVINGS, recipe.getNumberOfServing());
             recipeValues.put(RECIPE_COLUMN_PREP_TIME, recipe.getTimeInMinute());
             recipeValues.put(RECIPE_COLUMN_PRICE_LEVEL, recipe.getCostDegree());
+            recipeValues.put(RECIPE_COLUMN_IMAGE_URI, recipe.getImageUrl());
 
             long recipeId = db.insert(RECIPE_TABLE_NAME, null, recipeValues);
 

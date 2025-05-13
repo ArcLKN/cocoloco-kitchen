@@ -29,13 +29,18 @@ public class SharedViewModel extends AndroidViewModel {
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
+                    int recipeId = cursor.getInt(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_ID));
                     String name = cursor.getString(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_NAME));
                     String description = cursor.getString(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_DESCRIPTION));
                     int servings = cursor.getInt(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_SERVINGS));
                     int prepTime = cursor.getInt(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_PREP_TIME));
                     String price = cursor.getString(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_PRICE_LEVEL));
                     String source = cursor.getString(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_SOURCE));
+                    String image_uri = cursor.getString(cursor.getColumnIndexOrThrow(KitchenDB.RECIPE_COLUMN_IMAGE_URI));
                     // Log.d("SharedViewModel", "Serving value: " + servings);
+
+                    List<Ingredient> ingredients = kitchenDB.getIngredientsForRecipe(recipeId);
+                    //List<String> imagePaths = kitchenDB.getImagePathsForRecipe(recipeId);
 
 
                     Recipe recipe = new Recipe(
@@ -44,9 +49,9 @@ public class SharedViewModel extends AndroidViewModel {
                             servings,
                             prepTime,
                             price,
-                            null,
-                            R.drawable.aymen_cinnamon_rolls, // Temporary image
-                            null,
+                            image_uri,
+                            R.drawable.recipe_default, // Temporary image
+                            ingredients,
                             null,
                             null,
                             false,
