@@ -1,6 +1,7 @@
 package com.example.cocolocokitchen;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,6 +61,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         Recipe recipe = recipeList.get(position);
 
         holder.titleTextView.setText(recipe.getTitle());
+        if (recipe.isFavorite()) {
+            Drawable favoriteDrawable = ContextCompat.getDrawable(context, R.drawable.baseline_favorite_24); // Replace with your actual drawable
+            holder.titleTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, favoriteDrawable, null);
+        }
         if (holder.descriptionTextView != null) {
             holder.descriptionTextView.setText(recipe.getDescription());
         }
