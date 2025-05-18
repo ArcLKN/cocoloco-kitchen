@@ -2,6 +2,8 @@ package com.example.cocolocokitchen;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -33,6 +35,7 @@ public class RecipeViewFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private Recipe recipe;
+    private KitchenDB kitchenDB;
 
     /**
      * Use this factory method to create a new instance of
@@ -111,6 +114,18 @@ public class RecipeViewFragment extends Fragment {
                             .into(imageView);
                 }
 
+                kitchenDB = new KitchenDB(getContext());
+
+                ImageView favView = view.findViewById(R.id.recipe_do_favorite);
+                updateFavoriteIcon(favView, recipe.isFavorite());
+                favView.setOnClickListener(v -> {
+                    boolean newFavoriteStatus = !recipe.isFavorite();
+                    recipe.setFavorite(newFavoriteStatus); // update the recipe object
+                    updateFavoriteIcon(favView, newFavoriteStatus);
+
+                    kitchenDB.setIsFavorite(recipe.getId(), newFavoriteStatus);
+                });
+
                 LinearLayout utensilContainer = view.findViewById(R.id.recipe_utensil_container);
                 List<Utensil> utensilList = recipe.getUtensilList();
                 if (utensilList == null || utensilList.isEmpty()) {
@@ -164,5 +179,10 @@ public class RecipeViewFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private void updateFavoriteIcon(ImageView favView, boolean isFavorite) {
+        int iconRes = isFavorite ? R.drawable.baseline_favorite_24 : R.drawable.baseline_favorite_border_48;
+        favView.setImageDrawable(ContextCompat.getDrawable(requireContext(), iconRes));
     }
 }

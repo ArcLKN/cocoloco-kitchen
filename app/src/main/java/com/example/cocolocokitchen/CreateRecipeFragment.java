@@ -152,10 +152,11 @@ public class CreateRecipeFragment extends Fragment {
 
         String imageUriString = imageUri != null ? imageUri.toString() : null;
 
-        Recipe new_recipe = new Recipe(title, desc, people, time, costDegreeValue, imageUriString, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
+        Recipe new_recipe = new Recipe(0, title, desc, people, time, costDegreeValue, imageUriString, R.drawable.recipe_default, ingredientList, utensilList, stepList, false, null, null, source);
 
         recipes.add(new_recipe);
-        kitchenDB.insertRecipe(new_recipe);
+        int newId = kitchenDB.insertRecipe(new_recipe);
+        new_recipe.setId(newId);
 
 
         Toast.makeText(getContext(), "New Recipe Created!", Toast.LENGTH_SHORT).show();

@@ -42,10 +42,12 @@ public class SharedViewModel extends AndroidViewModel {
                     List<Ingredient> ingredients = kitchenDB.getIngredientsForRecipe(recipeId);
                     List<Utensil> utensils = kitchenDB.getUtensilsForRecipe(recipeId);
                     List<Step> steps = kitchenDB.getStepsForRecipe(recipeId);
+                    boolean isFavorite = kitchenDB.isFavorite(recipeId);
                     //List<String> imagePaths = kitchenDB.getImagePathsForRecipe(recipeId);
 
 
                     Recipe recipe = new Recipe(
+                            recipeId,
                             name,
                             description,
                             servings,
@@ -56,7 +58,7 @@ public class SharedViewModel extends AndroidViewModel {
                             ingredients,
                             utensils,
                             steps,
-                            false,
+                            isFavorite,
                             null,
                             null,
                             source
@@ -67,11 +69,12 @@ public class SharedViewModel extends AndroidViewModel {
                 cursor.close();
             }
             if (recipeList.isEmpty()) {
-                Recipe recipe1 = new Recipe("Cinnamon & Orange Flaky Rolls", "An orange CinnamonRoll",
+                Recipe recipe1 = new Recipe(0,"Cinnamon & Orange Flaky Rolls", "An orange CinnamonRoll",
                         4, 60, "$", null,
                         R.drawable.aymen_cinnamon_rolls, null,
                         null, null, false, null, null, null);
                 for (int i = 0; i < 10; i++) {
+                    recipe1.setId(i);
                     recipeList.add(recipe1);
                 }
             }

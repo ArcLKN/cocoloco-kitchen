@@ -29,14 +29,35 @@
             android:textStyle="bold"
             android:maxLines="3"
             android:text="@string/hello_blank_fragment" />
-        <TextView
-            android:layout_marginTop="@dimen/simple_margin"
-            android:id="@+id/recipe_source"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="18dp"
-            android:maxLines="1"
-            android:text="Author:" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            >
+            <TextView
+                android:layout_marginTop="@dimen/simple_margin"
+                android:id="@+id/recipe_source"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="18dp"
+                android:maxLines="1"
+                android:text="Author:"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+            <ImageView
+                android:id="@+id/recipe_do_favorite"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:src="@drawable/baseline_favorite_border_48"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </RelativeLayout>
         <TextView
             android:layout_marginTop="@dimen/simple_margin"
             android:id="@+id/recipe_time"

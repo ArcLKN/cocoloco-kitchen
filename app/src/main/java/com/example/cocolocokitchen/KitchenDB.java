@@ -430,6 +430,32 @@ public class KitchenDB extends SQLiteOpenHelper {
 
         return steps;
     }
+    public boolean isFavorite(int recipeId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT 1 FROM " + FAV_TABLE_NAME +
+                " WHERE " + RECIPE_COLUMN_ID + " = ? LIMIT 1";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(recipeId)});
+        boolean isFav = (cursor != null && cursor.moveToFirst());
+
+        if (cursor != null) cursor.close();
+
+        return isFav;
+    }
+    public void setIsFavorite(int recipeId, boolean isFavorite) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if (isFavorite) {
+            // Insert the recipeId into the favorites table if not already present
+            ContentValues values = new ContentValues();
+            values.put(RECIPE_COLUMN_ID, recipeId);
+            db.insertWithOnConflict(FAV_TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        } else {
+            // Remove the recipeId from the favorites table
+            db.delete(FAV_TABLE_NAME, RECIPE_COLUMN_ID + " = ?", new String[]{String.valueOf(recipeId)});
+        }
+    }
 
     private long getOrInsertIngredientId(SQLiteDatabase sqLiteDatabase, Ingredient ingredient) {
         Cursor cursor = sqLiteDatabase.query(
@@ -482,7 +508,7 @@ public class KitchenDB extends SQLiteOpenHelper {
         db.insert("ingredients", null, values);
     }
 
-    public void insertRecipe(Recipe recipe) {
+    public int insertRecipe(Recipe recipe) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -535,6 +561,7 @@ public class KitchenDB extends SQLiteOpenHelper {
             db.insert(IMAGE_TABLE_NAME, null, imageValues);
 
             db.setTransactionSuccessful();
+            return (int) recipeId;
         } finally {
             db.endTransaction();
             db.close();

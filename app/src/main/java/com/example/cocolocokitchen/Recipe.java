@@ -3,6 +3,7 @@ package com.example.cocolocokitchen;
 import java.util.List;
 
 public class Recipe {
+    private int id;
     private String title;
     private String description;
     private int numberOfServing;
@@ -18,10 +19,11 @@ public class Recipe {
     private String group;
     private String source;
 
-    public Recipe(String title, String description, int numberOfServing, int timeInMinute,
+    public Recipe(int id, String title, String description, int numberOfServing, int timeInMinute,
                   String costDegree, String imageUrl, int imageResId, List<Ingredient> ingredientList,
                   List<Utensil> utensilList, List<Step> stepList, boolean isFavorite,
                   List<String> tags, String group, String source) {
+        this . id = id;
         this . title = title;
         this . description = description;
         this . numberOfServing = numberOfServing;
@@ -36,6 +38,10 @@ public class Recipe {
         this . tags = tags;
         this . group = group;
         this . source = source;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -94,6 +100,9 @@ public class Recipe {
         return source;
     }
 
+    public void setId(int id) {
+        this . id = id;
+    }
 
     public void setTitle(String title) {
         this.title = title;
