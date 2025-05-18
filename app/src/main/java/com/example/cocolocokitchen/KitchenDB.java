@@ -567,6 +567,14 @@ public class KitchenDB extends SQLiteOpenHelper {
             db.close();
         }
     }
+
+    public void deleteRecipe(int recipeId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(RECIPE_TABLE_NAME, RECIPE_COLUMN_ID + " = ?", new String[]{String.valueOf(recipeId)});
+        db.close();
+    }
+
+
     // Méthode pour appliquer une semaine type au planning
     public void applyWeekTemplateToCalendar(long weekTemplateId, String startDate) {
         SQLiteDatabase db = this.getWritableDatabase();

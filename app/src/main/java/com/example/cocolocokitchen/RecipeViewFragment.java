@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -124,6 +125,24 @@ public class RecipeViewFragment extends Fragment {
                     updateFavoriteIcon(favView, newFavoriteStatus);
 
                     kitchenDB.setIsFavorite(recipe.getId(), newFavoriteStatus);
+                });
+
+                ImageView deleteView = view.findViewById(R.id.recipe_delete);
+                deleteView.setOnClickListener(v -> {
+                    kitchenDB.deleteRecipe(recipe.getId());
+
+                    List<Recipe> recipes = viewModel.getRecipeList();
+                    recipes.remove(getArguments().getInt("recipeIndex", -1));
+
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("deleteIndex", getArguments().getInt("recipeIndex", -1));
+                    RecipesFragment fragment = new RecipesFragment();
+                    fragment.setArguments(bundle);
+
+                    getParentFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .commit();
                 });
 
                 LinearLayout utensilContainer = view.findViewById(R.id.recipe_utensil_container);

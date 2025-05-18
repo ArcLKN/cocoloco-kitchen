@@ -68,17 +68,13 @@ public class SharedViewModel extends AndroidViewModel {
                 } while (cursor.moveToNext());
                 cursor.close();
             }
-            if (recipeList.isEmpty()) {
-                Recipe recipe1 = new Recipe(0,"Cinnamon & Orange Flaky Rolls", "An orange CinnamonRoll",
-                        4, 60, "$", null,
-                        R.drawable.aymen_cinnamon_rolls, null,
-                        null, null, false, null, null, null);
-                for (int i = 0; i < 10; i++) {
-                    recipe1.setId(i);
-                    recipeList.add(recipe1);
-                }
-            }
         }
         return recipeList;
     }
+
+    public List<Recipe> resetRecipeList() {
+        recipeList.clear();
+        return getRecipeList();
+    }
+
 }
