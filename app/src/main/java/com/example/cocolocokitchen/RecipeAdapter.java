@@ -26,6 +26,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private Context context;
     private List<Recipe> recipeList;
     private List<Recipe> fullRecipeList;
+    private boolean isFavorite = false;
+    private String currentQuery = "";
 
     private int currentViewType = -1;
     private OnRecipeClickListener listener;
@@ -37,7 +39,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public RecipeAdapter(Context context, List<Recipe> recipeList) {
         this.context = context;
         this.recipeList = recipeList;
-        this.fullRecipeList = new ArrayList<>(recipeList);   // full original copy
+        this.fullRecipeList = new ArrayList<>(recipeList);
     }
 
     @NonNull
@@ -62,7 +64,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         holder.titleTextView.setText(recipe.getTitle());
         if (recipe.isFavorite()) {
-            Drawable favoriteDrawable = ContextCompat.getDrawable(context, R.drawable.baseline_favorite_24); // Replace with your actual drawable
+            Drawable favoriteDrawable = ContextCompat.getDrawable(context, R.drawable.baseline_favorite_24);
             holder.titleTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, favoriteDrawable, null);
         }
         if (holder.descriptionTextView != null) {
@@ -92,7 +94,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             Log.d("RecipeAdapter", "Item clicked: " + recipe.getTitle());
 
             if (listener != null) {
-                int positionClicked = holder.getAdapterPosition(); // safer than external index
+                int positionClicked = holder.getAdapterPosition();
                 Bundle bundle = new Bundle();
                 bundle.putInt("recipeIndex", positionClicked);
 
@@ -106,7 +108,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                         .addToBackStack(null)
                         .commit();
 
-                listener.onRecipeClick(recipe); // optional: for analytics, etc.
+                listener.onRecipeClick(recipe); // optional
             }
         });
     }
@@ -117,13 +119,30 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     public void filter(String query) {
+        currentQuery = query;
+        applyFilters();
+    }
+
+    public void filterFavorite(boolean doFilter) {
+        isFavorite = doFilter;
+        applyFilters();
+    }
+
+    private void applyFilters() {
         List<Recipe> filteredList = new ArrayList<>();
         for (Recipe recipe : fullRecipeList) {
-            if (recipe.getTitle().toLowerCase().contains(query.toLowerCase())) {
+            boolean matchesQuery = recipe.getTitle().toLowerCase().contains(currentQuery.toLowerCase());
+            boolean matchesFavorite = !isFavorite || recipe.isFavorite();
+
+            if (matchesQuery && matchesFavorite) {
                 filteredList.add(recipe);
             }
         }
         recipeList = filteredList;
+        notifyDataSetChanged();
+    }
+    public void resetList() {
+        recipeList = fullRecipeList;
         notifyDataSetChanged();
     }
 

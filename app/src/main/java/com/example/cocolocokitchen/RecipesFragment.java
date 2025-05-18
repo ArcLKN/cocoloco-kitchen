@@ -2,6 +2,7 @@ package com.example.cocolocokitchen;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +14,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import androidx.appcompat.widget.SearchView;
+
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.MenuProvider;
 import androidx.core.view.ViewCompat;
@@ -102,12 +107,35 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED); // lifecycle-aware!
 
-        LinearLayout BottomTypeMenuButton = view.findViewById(R.id.recipes_button_type_menu);
+        TextView BottomTypeMenuButton = view.findViewById(R.id.recipes_button_type_menu);
 
         BottomTypeMenuButton.setOnClickListener(v -> {
             BottomSheetDialog dialog = new BottomSheetDialog(getContext());
             View sheetView = getLayoutInflater().inflate(R.layout.recipes_bottom_type_menu, null);
             dialog.setContentView(sheetView);
+
+            RadioButton option1 = sheetView.findViewById(R.id.radio_option1);
+            RadioButton option4 = sheetView.findViewById(R.id.radio_option4);
+
+            Drawable[] drawables = BottomTypeMenuButton.getCompoundDrawables();
+
+            option1.setOnClickListener(lambda -> {
+                recipeAdapter.filterFavorite(false);
+                dialog.dismiss();
+                BottomTypeMenuButton.setText("File");
+                Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_file);
+                BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(favoriteDrawable, null, drawables[2], null); // Remove drawable
+            });
+
+            option4.setOnClickListener(lambda -> {
+                recipeAdapter.filterFavorite(true);
+                dialog.dismiss();
+                BottomTypeMenuButton.setText("Favorite");
+                Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_favorite_border_24);
+                BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(favoriteDrawable, null, drawables[2], null); // Remove drawable
+
+            });
+
             dialog.show();
         });
 
