@@ -123,14 +123,6 @@
                 android:layout_height="wrap_content"
                 android:minDate="01/04/2025" />
 
-            <TextView
-                android:id="@+id/fav_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="My Favourites"
-                android:fontFamily="@font/matipo"
-                android:textSize="18sp"/>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/favs_recycler_view"
                 android:layout_width="0dp"
