@@ -223,8 +223,10 @@ public class RecipeViewFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                         String selectedItem = parent.getItemAtPosition(pos).toString();
-                        kitchenDB.setRecipeGroupName(recipe.getId(), selectedItem);
-                        recipe.setGroup(selectedItem);
+                        if (!selectedItem.equals(recipe.getGroup())) {
+                            kitchenDB.setRecipeGroupName(recipe.getId(), selectedItem);
+                            recipe.setGroup(selectedItem);
+                        }
                     }
 
                     @Override
