@@ -43,6 +43,7 @@ public class SharedViewModel extends AndroidViewModel {
                     List<Utensil> utensils = kitchenDB.getUtensilsForRecipe(recipeId);
                     List<Step> steps = kitchenDB.getStepsForRecipe(recipeId);
                     boolean isFavorite = kitchenDB.isFavorite(recipeId);
+                    String groupName = kitchenDB.getRecipeGroup(recipeId);
                     //List<String> imagePaths = kitchenDB.getImagePathsForRecipe(recipeId);
 
 
@@ -60,7 +61,7 @@ public class SharedViewModel extends AndroidViewModel {
                             steps,
                             isFavorite,
                             null,
-                            null,
+                            groupName,
                             source
                     );
 

@@ -11,8 +11,11 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -194,6 +197,41 @@ public class RecipeViewFragment extends Fragment {
                         stepIndex++;
                     }
                 }
+
+                Spinner group_spinner = (Spinner) view.findViewById(R.id.recipe_group_spinner);
+                // Create an ArrayAdapter using the string array and a default spinner layout.
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                        requireContext(),
+                        R.array.recipe_group_array,
+                        android.R.layout.simple_spinner_item
+                );
+                // Specify the layout to use when the list of choices appears.
+                // Here using the default spinner layout from android studio.
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                // Apply the adapter to the spinner.
+                group_spinner.setAdapter(adapter);
+
+                String targetGroup = recipe.getGroup();
+                if (targetGroup != null) {
+                    int position = adapter.getPosition(targetGroup);
+                    if (position >= 0) {
+                        group_spinner.setSelection(position);
+                    }
+                }
+
+                group_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                        String selectedItem = parent.getItemAtPosition(pos).toString();
+                        kitchenDB.setRecipeGroupName(recipe.getId(), selectedItem);
+                        recipe.setGroup(selectedItem);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        // Handle case where nothing is selected if needed
+                    }
+                });
             }
         }
 

@@ -443,6 +443,25 @@ public class KitchenDB extends SQLiteOpenHelper {
 
         return isFav;
     }
+    public String getRecipeGroup(int recipeId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String groupName = "None";
+
+        String query = "SELECT " + GROUP_COLUMN_NAME + ", " + GROUP_COLUMN_COLOR +
+                " FROM `" + GROUP_TABLE_NAME + "` " +
+                " WHERE " + GROUP_COLUMN_ID + " = ?" +
+                " LIMIT 1";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(recipeId)});
+        if (cursor.moveToFirst()) {
+            groupName = cursor.getString(0);
+            String groupColor = cursor.getString(1);
+        }
+
+        if (cursor != null) cursor.close();
+
+        return groupName;
+    }
     public void setIsFavorite(int recipeId, boolean isFavorite) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -454,6 +473,27 @@ public class KitchenDB extends SQLiteOpenHelper {
         } else {
             // Remove the recipeId from the favorites table
             db.delete(FAV_TABLE_NAME, RECIPE_COLUMN_ID + " = ?", new String[]{String.valueOf(recipeId)});
+        }
+    }
+
+    public void setRecipeGroupName(int recipeId, String groupName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(GROUP_COLUMN_NAME, groupName);
+        values.put(GROUP_COLUMN_COLOR, "#FFFFFF");
+
+        int rowsAffected = db.update(
+                GROUP_TABLE_NAME,
+                values,
+                GROUP_COLUMN_ID + " = ?",
+                new String[]{String.valueOf(recipeId)}
+        );
+
+        // If no rows were updated
+        if (rowsAffected == 0) {
+            values.put(GROUP_COLUMN_ID, recipeId);
+            db.insert(GROUP_TABLE_NAME, null, values);
         }
     }
 
