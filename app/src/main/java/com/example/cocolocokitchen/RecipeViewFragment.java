@@ -80,10 +80,10 @@ public class RecipeViewFragment extends Fragment {
 
         // Get the index from arguments
         if (getArguments() != null) {
-            int index = getArguments().getInt("recipeIndex", -1);
-            if (index != -1) {
+            int recipeId = getArguments().getInt("recipeId", -1);
+            if (recipeId != -1) {
                 SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-                recipe = viewModel.getRecipeList().get(index);
+                recipe = findRecipeById(recipeId);
 
                 // TODO: Now bind `recipe` to your views here
                 // For example:
@@ -243,5 +243,15 @@ public class RecipeViewFragment extends Fragment {
     private void updateFavoriteIcon(ImageView favView, boolean isFavorite) {
         int iconRes = isFavorite ? R.drawable.baseline_favorite_24 : R.drawable.baseline_favorite_border_48;
         favView.setImageDrawable(ContextCompat.getDrawable(requireContext(), iconRes));
+    }
+
+    public Recipe findRecipeById(int id) {
+        SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        for (Recipe recipe : viewModel.getRecipeList()) {
+            if (recipe.getId() == id) {
+                return recipe;
+            }
+        }
+        return null;
     }
 }

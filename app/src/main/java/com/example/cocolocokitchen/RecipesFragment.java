@@ -38,11 +38,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener {
 
     private RecipeAdapter recipeAdapter;
+    private RecipesGroupSectionAdapter groupAdapter; // adapter for grouped mode
+    private boolean isGroupedMode = false;
+    private List<Recipe> recipes = new ArrayList<>();;
 
     public RecipesFragment() {
         // Required empty public constructor
@@ -115,6 +120,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
             dialog.setContentView(sheetView);
 
             RadioButton option1 = sheetView.findViewById(R.id.radio_option1);
+            RadioButton option2 = sheetView.findViewById(R.id.radio_option2);
             RadioButton option4 = sheetView.findViewById(R.id.radio_option4);
 
             Drawable[] drawables = BottomTypeMenuButton.getCompoundDrawables();
@@ -122,14 +128,25 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
             option1.setOnClickListener(lambda -> {
                 recipeAdapter.filterFavorite(false);
                 dialog.dismiss();
+                switchToListMode();
                 BottomTypeMenuButton.setText("File");
                 Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_file);
                 BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(favoriteDrawable, null, drawables[2], null); // Remove drawable
             });
 
+            option2.setOnClickListener(lambda -> {
+                switchToGroupMode();
+                dialog.dismiss();
+                BottomTypeMenuButton.setText("Groups");
+                Drawable viewDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_folder);
+                BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(viewDrawable, null, drawables[2], null); // Remove drawable
+
+            });
+
             option4.setOnClickListener(lambda -> {
                 recipeAdapter.filterFavorite(true);
                 dialog.dismiss();
+                switchToListMode();
                 BottomTypeMenuButton.setText("Favorite");
                 Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_favorite_border_24);
                 BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(favoriteDrawable, null, drawables[2], null); // Remove drawable
@@ -144,7 +161,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
 
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        List<Recipe> recipes = viewModel.getRecipeList();
+        recipes = viewModel.getRecipeList();
 
         recipeAdapter = new RecipeAdapter(requireContext(), recipes);
         recipeAdapter.setOnRecipeClickListener(this);
@@ -170,4 +187,42 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     public void onRecipeClick(Recipe recipe) {
 
     }
+
+    private void switchToListMode() {
+        if (isGroupedMode) {
+            RecyclerView recyclerView = requireView().findViewById(R.id.recipes_recycler_view);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            recyclerView.setAdapter(recipeAdapter);  // REUSE adapter instance
+            isGroupedMode = false;
+        }
+    }
+
+    private void switchToGroupMode() {
+        if (!isGroupedMode) {
+            RecyclerView recyclerView = requireView().findViewById(R.id.recipes_recycler_view);
+
+            // Build grouped data as before...
+            String[] groupArray = getResources().getStringArray(R.array.recipe_group_array);
+            Map<String, List<Recipe>> grouped = new HashMap<>();
+            for (Recipe recipe : recipes) {
+                String group = recipe.getGroup();
+                if (group == null || group.isEmpty()) group = "None";
+                grouped.computeIfAbsent(group, k -> new ArrayList<>()).add(recipe);
+            }
+            List<RecipesGroupSection> sections = new ArrayList<>();
+            for (String groupName : groupArray) {
+                List<Recipe> groupRecipes = grouped.get(groupName);
+                if (groupRecipes != null && !groupRecipes.isEmpty()) {
+                    sections.add(new RecipesGroupSection(groupName, "#FFFFFF", groupRecipes, false));
+                }
+            }
+
+            groupAdapter = new RecipesGroupSectionAdapter(requireContext(), sections);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            recyclerView.setAdapter(groupAdapter);
+
+            isGroupedMode = true;
+        }
+    }
+
 }

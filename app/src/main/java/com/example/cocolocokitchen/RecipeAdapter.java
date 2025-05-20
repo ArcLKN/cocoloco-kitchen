@@ -92,11 +92,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         holder.itemView.setOnClickListener(v -> {
             Log.d("RecipeAdapter", "Item clicked: " + recipe.getTitle());
+            Log.d("RecipeAdapter", "Listener: " + listener);
 
             if (listener != null) {
                 int positionClicked = holder.getAdapterPosition();
+                Recipe clickedRecipe = recipeList.get(positionClicked);
+                int recipeId = clickedRecipe.getId();
+
+                Log.d("RecipeAdapter", "Item clicked: " + clickedRecipe.getTitle());
+                Log.d("RecipeAdapter", "ID passed: " + recipeId);
+
                 Bundle bundle = new Bundle();
-                bundle.putInt("recipeIndex", positionClicked);
+                bundle.putInt("recipeId", recipeId);
 
                 RecipeViewFragment fragment = new RecipeViewFragment();
                 fragment.setArguments(bundle);
