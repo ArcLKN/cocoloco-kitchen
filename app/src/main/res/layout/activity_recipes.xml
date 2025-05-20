@@ -30,7 +30,7 @@
         android:background="@drawable/rounded_border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/icon_file"
+        android:drawableLeft="@drawable/baseline_view_list_32"
         android:drawablePadding="@dimen/simple_margin"
         android:drawableRight="@drawable/icon_dropdown"
         android:text="File"

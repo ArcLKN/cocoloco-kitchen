@@ -130,7 +130,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
                 dialog.dismiss();
                 switchToListMode();
                 BottomTypeMenuButton.setText("File");
-                Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_file);
+                Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_view_list_32);
                 BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(favoriteDrawable, null, drawables[2], null); // Remove drawable
             });
 
@@ -138,7 +138,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
                 switchToGroupMode();
                 dialog.dismiss();
                 BottomTypeMenuButton.setText("Groups");
-                Drawable viewDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_folder);
+                Drawable viewDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_folder_open_32);
                 BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(viewDrawable, null, drawables[2], null); // Remove drawable
 
             });
@@ -148,7 +148,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
                 dialog.dismiss();
                 switchToListMode();
                 BottomTypeMenuButton.setText("Favorite");
-                Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_favorite_border_24);
+                Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_favorite_border_32);
                 BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(favoriteDrawable, null, drawables[2], null); // Remove drawable
 
             });
