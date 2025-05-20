@@ -1,3 +1,6 @@
+// Comments by ArcLKN
+// Last modified by ArcLKN
+
 package com.example.cocolocokitchen;
 
 import android.app.Activity;
@@ -16,7 +19,6 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,7 +44,6 @@ public class CreateRecipeFragment extends Fragment {
     LinearLayout stepListContainer;
     List<Step> stepList = new ArrayList<>();
 
-    private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
     private String costDegreeValue;
     private ActivityResultLauncher<Intent> pickImageLauncher;
@@ -54,13 +55,16 @@ public class CreateRecipeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_create_recipe, container, false);
 
+        // Our database related class.
         kitchenDB = new KitchenDB(getContext());
 
+        // Listener to create the recipe.
         Button createRecipeButton = view.findViewById(R.id.create_recipe_button);
         createRecipeButton.setOnClickListener(v -> {
             createRecipe(view);
         });
 
+        // Define the price of the recipe when clicking on one of the following buttons.
         Button priceLowButton = view.findViewById(R.id.create_recipe_price_low);
         Button priceMediumButton = view.findViewById(R.id.create_recipe_price_medium);
         Button priceHighButton = view.findViewById(R.id.create_recipe_price_high);
@@ -74,6 +78,7 @@ public class CreateRecipeFragment extends Fragment {
             costDegreeValue = priceHighButton.getText().toString().trim();
         });
 
+        // Listeners to addThing buttons, each opening their own dialog box to enter details.
         ingredientListContainer = view.findViewById(R.id.create_recipe_ingredient_list_container);
         utensilListContainer = view.findViewById(R.id.create_recipe_utensil_list_container);
         stepListContainer = view.findViewById(R.id.create_recipe_step_list_container);
@@ -87,10 +92,11 @@ public class CreateRecipeFragment extends Fragment {
         Button addStepButton = view.findViewById(R.id.create_recipe_button_step);
         addStepButton.setOnClickListener(v -> showAddStepDialog());
 
-
-        recipeImageView = view.findViewById(R.id.create_recipe_image); // Replace with your ImageView ID
-
+        // This make possible for the user to select an image from his gallery for the recipe.
+        recipeImageView = view.findViewById(R.id.create_recipe_image);
+        // Handles the result of launching another activity (here the image picker)
         pickImageLauncher = registerForActivityResult(
+                // If a result is existing it assigns its data to imageUri which is used to set the image.
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
@@ -99,10 +105,12 @@ public class CreateRecipeFragment extends Fragment {
                     }
                 }
         );
-
         recipeImageView.setOnClickListener(v -> {
+            // Creates an intent pointing to the user device's gallery storage.
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            // Limits the selection to image only.
             intent.setType("image/*");
+            // Launch the image picker app.
             pickImageLauncher.launch(intent);
         });
 
@@ -110,6 +118,9 @@ public class CreateRecipeFragment extends Fragment {
         return view;
     }
 
+    // When the createRecipe button is pressed, fetch every value from the different fields and
+    // create a new recipe with them.
+    // It then adds it to the recipesList through the SharedViewModel and to the database through KitchenDB.
     public void createRecipe(View view) {
 
         EditText edit_text_title = view.findViewById(R.id.create_recipe_title);
@@ -162,6 +173,9 @@ public class CreateRecipeFragment extends Fragment {
         Toast.makeText(getContext(), "New Recipe Created!", Toast.LENGTH_SHORT).show();
     }
 
+    // Dialog box showing when clicking on 'Add Ingredient' button.
+    // The dialog box has three fields: name, quantity and quantity type.
+    // It then uses the entered values to add a new entry to an IngredientList container.
     private void showAddIngredientDialog() {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_add_ingredient, null);
@@ -190,7 +204,6 @@ public class CreateRecipeFragment extends Fragment {
 
                 new UnitItem("Other", true),
                 new UnitItem("Slice", false)
-                // Add more here if needed
         );
 
         UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(requireContext(), unitItems);
@@ -229,7 +242,7 @@ public class CreateRecipeFragment extends Fragment {
                         ingredientView.setLayoutParams(new LinearLayout.LayoutParams(
                                 0,
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                                1.0f // Weight to take up available space
+                                1.0f
                         ));
                         ingredientView.setPadding(16, 8, 8, 8);
 
@@ -264,6 +277,8 @@ public class CreateRecipeFragment extends Fragment {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
+    // Works the same as the Ingredient Dialog Box.
     private void showAddUtensilDialog() {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_add_utensil, null);
@@ -298,7 +313,7 @@ public class CreateRecipeFragment extends Fragment {
                         utensilView.setLayoutParams(new LinearLayout.LayoutParams(
                                 0,
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                                1.0f // Weight to take up available space
+                                1.0f
                         ));
                         utensilView.setPadding(16, 8, 8, 8);
 
@@ -333,6 +348,8 @@ public class CreateRecipeFragment extends Fragment {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
+    // Works the same as the Ingredient Dialog Box.
     private void showAddStepDialog() {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_add_step, null);
@@ -349,7 +366,6 @@ public class CreateRecipeFragment extends Fragment {
 
                     if (!title.isEmpty() && !description.isEmpty()) {
 
-                        // Layout vertical pour l'étape entière
                         LinearLayout stepEntryLayout = new LinearLayout(requireContext());
                         stepEntryLayout.setOrientation(LinearLayout.VERTICAL);
                         stepEntryLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -359,7 +375,6 @@ public class CreateRecipeFragment extends Fragment {
                         stepEntryLayout.setPadding(16, 16, 16, 16);
                         stepEntryLayout.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.custom_input));
 
-                        // Layout horizontal pour le titre + bouton supprimer
                         LinearLayout titleRowLayout = new LinearLayout(requireContext());
                         titleRowLayout.setOrientation(LinearLayout.HORIZONTAL);
                         titleRowLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -367,18 +382,16 @@ public class CreateRecipeFragment extends Fragment {
                                 LinearLayout.LayoutParams.WRAP_CONTENT
                         ));
 
-                        // Titre
                         TextView stepTitleView = new TextView(requireContext());
                         stepTitleView.setText(title);
                         stepTitleView.setTextSize(18);
                         stepTitleView.setLayoutParams(new LinearLayout.LayoutParams(
                                 0,
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                                1.0f // prend l'espace disponible
+                                1.0f
                         ));
                         stepTitleView.setPadding(0, 0, 8, 0);
 
-                        // Bouton supprimer
                         Button deleteButton = new Button(requireContext());
                         deleteButton.setText("X");
                         deleteButton.setContentDescription("Delete step");
@@ -389,24 +402,19 @@ public class CreateRecipeFragment extends Fragment {
                         deleteButton.setLayoutParams(new LinearLayout.LayoutParams(widthInPx, widthInPx));
                         deleteButton.setOnClickListener(v -> stepListContainer.removeView(stepEntryLayout));
 
-                        // Ajouter titre + bouton à la ligne
                         titleRowLayout.addView(stepTitleView);
                         titleRowLayout.addView(deleteButton);
 
-                        // Description en dessous
                         TextView stepDescriptionView = new TextView(requireContext());
                         stepDescriptionView.setText(description);
                         stepDescriptionView.setTextSize(14);
                         stepDescriptionView.setPadding(0, 8, 0, 0);
 
-                        // Ajouter tout au layout principal
                         stepEntryLayout.addView(titleRowLayout);
                         stepEntryLayout.addView(stepDescriptionView);
 
-                        // Ajouter au conteneur
                         stepListContainer.addView(stepEntryLayout);
 
-                        // Ajouter à la liste des étapes
                         Step newStep = new Step(title, description);
                         stepList.add(newStep);
 
