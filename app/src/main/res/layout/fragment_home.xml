@@ -16,7 +16,27 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+
+                <ImageView
+                    android:id="@+id/icon_walker_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cuisto" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -25,21 +45,17 @@
                 android:textSize="20sp"
                 android:gravity="center" />
 
-            <TextView
-                android:id="@+id/subtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="What do you want to eat today ?"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:layout_marginBottom="40dp"/>
+                <TextView
+                    android:id="@+id/subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="What do you want to eat today ?"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="40dp"/>
+                </LinearLayout>
 
-            <ImageView
-                android:id="@+id/walker_image"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cuisto" />
+            </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -138,11 +154,20 @@
 <!--                android:layout_height="144dp"-->
 <!--                android:layout_marginTop="@dimen/simple_margin"/>-->
 
+
+            <ImageView
+                android:id="@+id/walker_image"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cuisto" />
+
             <View
                 android:id="@+id/clear_space"
                 android:layout_width="match_parent"
                 android:layout_height="96dp"
                 app:layout_constraintBottom_toBottomOf="parent" />
+
         </LinearLayout>
     </ScrollView>
 
