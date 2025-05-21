@@ -2,7 +2,7 @@
     <string name="app_name">CocoLocoKitchen</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="RecipesModeList">List</string>
-    <string name="RecipesModeGroup">Group</string>
-    <string name="RecipesModeFav">Favorites</string>
+    <string name="RecipesModeList">Liste</string>
+    <string name="RecipesModeGroup">Groupe</string>
+    <string name="RecipesModeFav">Favoris</string>
 </resources>

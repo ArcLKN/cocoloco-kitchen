@@ -1,7 +1,5 @@
 package com.example.cocolocokitchen;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,23 +9,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import androidx.appcompat.widget.SearchView;
 
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
 import androidx.core.view.MenuProvider;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
@@ -45,13 +36,11 @@ import java.util.Map;
 public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener {
 
     private RecipeAdapter recipeAdapter;
-    private RecipesGroupSectionAdapter groupAdapter; // adapter for grouped mode
-    private boolean isGroupedMode = false;
-    private List<Recipe> recipes = new ArrayList<>();;
+    RecipesGroupSectionAdapter groupAdapter; // adapter for grouped mode
+    boolean isGroupedMode = false;
+    private List<Recipe> recipes = new ArrayList<>();
 
-    public RecipesFragment() {
-        // Required empty public constructor
-    }
+    public RecipesFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,7 +53,6 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
         activity.setSupportActionBar(toolbar);
 
-        // Register the MenuProvider
         activity.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -115,7 +103,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         TextView BottomTypeMenuButton = view.findViewById(R.id.recipes_button_type_menu);
 
         BottomTypeMenuButton.setOnClickListener(v -> {
-            BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+            BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
             View sheetView = getLayoutInflater().inflate(R.layout.recipes_bottom_type_menu, null);
             dialog.setContentView(sheetView);
 
@@ -129,7 +117,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
                 recipeAdapter.filterFavorite(false);
                 dialog.dismiss();
                 switchToListMode();
-                BottomTypeMenuButton.setText("File");
+                BottomTypeMenuButton.setText(R.string.RecipesModeList);
                 Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_view_list_32);
                 BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(favoriteDrawable, null, drawables[2], null); // Remove drawable
             });
@@ -137,7 +125,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
             option2.setOnClickListener(lambda -> {
                 switchToGroupMode();
                 dialog.dismiss();
-                BottomTypeMenuButton.setText("Groups");
+                BottomTypeMenuButton.setText(R.string.RecipesModeGroup);
                 Drawable viewDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_folder_open_32);
                 BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(viewDrawable, null, drawables[2], null); // Remove drawable
 
@@ -147,7 +135,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
                 recipeAdapter.filterFavorite(true);
                 dialog.dismiss();
                 switchToListMode();
-                BottomTypeMenuButton.setText("Favorite");
+                BottomTypeMenuButton.setText(R.string.RecipesModeFav);
                 Drawable favoriteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_favorite_border_32);
                 BottomTypeMenuButton.setCompoundDrawablesWithIntrinsicBounds(favoriteDrawable, null, drawables[2], null); // Remove drawable
 
@@ -156,7 +144,6 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
             dialog.show();
         });
 
-        //Get recycler view
         RecyclerView recyclerView = view.findViewById(R.id.recipes_recycler_view);
 
 
@@ -173,7 +160,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
             Fragment createRecipeFragment = new CreateRecipeFragment();
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, createRecipeFragment) // Use your container ID here
+                    .replace(R.id.fragment_container, createRecipeFragment)
                     .addToBackStack(null) // Optional: enables back navigation
                     .commit();
         });
@@ -192,7 +179,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         if (isGroupedMode) {
             RecyclerView recyclerView = requireView().findViewById(R.id.recipes_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-            recyclerView.setAdapter(recipeAdapter);  // REUSE adapter instance
+            recyclerView.setAdapter(recipeAdapter);
             isGroupedMode = false;
         }
     }
@@ -201,7 +188,6 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         if (!isGroupedMode) {
             RecyclerView recyclerView = requireView().findViewById(R.id.recipes_recycler_view);
 
-            // Build grouped data as before...
             String[] groupArray = getResources().getStringArray(R.array.recipe_group_array);
             Map<String, List<Recipe>> grouped = new HashMap<>();
             for (Recipe recipe : recipes) {
