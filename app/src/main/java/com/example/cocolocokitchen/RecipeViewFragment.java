@@ -1,11 +1,9 @@
 package com.example.cocolocokitchen;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -36,8 +34,8 @@ public class RecipeViewFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    String mParam1;
+    String mParam2;
     private Recipe recipe;
     private KitchenDB kitchenDB;
 
@@ -198,7 +196,7 @@ public class RecipeViewFragment extends Fragment {
                     }
                 }
 
-                Spinner group_spinner = (Spinner) view.findViewById(R.id.recipe_group_spinner);
+                Spinner group_spinner = view.findViewById(R.id.recipe_group_spinner);
                 // Create an ArrayAdapter using the string array and a default spinner layout.
                 ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                         requireContext(),

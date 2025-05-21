@@ -60,23 +60,15 @@ public class CreateRecipeFragment extends Fragment {
 
         // Listener to create the recipe.
         Button createRecipeButton = view.findViewById(R.id.create_recipe_button);
-        createRecipeButton.setOnClickListener(v -> {
-            createRecipe(view);
-        });
+        createRecipeButton.setOnClickListener(v -> createRecipe(view));
 
         // Define the price of the recipe when clicking on one of the following buttons.
         Button priceLowButton = view.findViewById(R.id.create_recipe_price_low);
         Button priceMediumButton = view.findViewById(R.id.create_recipe_price_medium);
         Button priceHighButton = view.findViewById(R.id.create_recipe_price_high);
-        priceLowButton.setOnClickListener(v -> {
-            costDegreeValue = priceLowButton.getText().toString().trim();
-        });
-        priceMediumButton.setOnClickListener(v -> {
-            costDegreeValue = priceMediumButton.getText().toString().trim();
-        });
-        priceHighButton.setOnClickListener(v -> {
-            costDegreeValue = priceHighButton.getText().toString().trim();
-        });
+        priceLowButton.setOnClickListener(v -> costDegreeValue = priceLowButton.getText().toString().trim());
+        priceMediumButton.setOnClickListener(v -> costDegreeValue = priceMediumButton.getText().toString().trim());
+        priceHighButton.setOnClickListener(v -> costDegreeValue = priceHighButton.getText().toString().trim());
 
         // Listeners to addThing buttons, each opening their own dialog box to enter details.
         ingredientListContainer = view.findViewById(R.id.create_recipe_ingredient_list_container);
